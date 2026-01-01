@@ -1,4 +1,4 @@
-const CACHE_NAME = "music-pwa-v4"; // change version
+const CACHE_NAME = "music-pwa-v5"; // change version
 const FILES_TO_CACHE = [
   "/",
   "/index.html",
@@ -8,4 +8,5 @@ const FILES_TO_CACHE = [
   "/songs/Amma_song.mp3",
   "/songs/Aigiri_song.mp3",
   "/songs/Prema_Deshapu_yuvarani.mp3"
+
 ];

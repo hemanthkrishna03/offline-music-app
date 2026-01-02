@@ -12,7 +12,12 @@ const songs = [
   { title: "Kaam nahi", file: "songs/fighter.mp3" },
   { title: "Le teri Mitti", file: "songs/fighter.mp3" },
   { title: "terapai prakasham", file: "songs/beast.mp3" }
-
+  { title: "Badte Chalo", file: "songs/badte_chalo.mp3" },
+  { title: "Jana Gana Mana", file: "songs/Jana_Gana_Mana.mp3" },
+  { title: "Challa", file: "songs/Challa.mp3" },
+  { title: "Bharat Ki Beti", file: "songs/Bharat_ki_beti.mp3" },
+  { title: "Tiranga", file: "songs/Tiranga.mp3" },
+  { title: "Vande Mataram", file: "songs/vandemaataram.mp3" }
 ];
 
 const audio = document.getElementById("audio");
@@ -30,4 +35,5 @@ songs.forEach(song => {
 
   playlist.appendChild(li);
 });
+
 

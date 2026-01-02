@@ -7,9 +7,6 @@ const FILES_TO_CACHE = [
   "./manifest.json",
   "./songs/Amma_song.mp3",
   "./songs/Aigiri_song.mp3",
-  "./songs/Prema_Deshapu_yuvarani.mp3"
-  "./songs/Amma_song.mp3",
-  "./songs/Aigiri_song.mp3",
   "./songs/Prema_Deshapu_yuvarani.mp3",
   "./songs/laksya.mp3",
   "./songs/npsnii.mp3",
@@ -21,7 +18,15 @@ const FILES_TO_CACHE = [
   "./songs/fighter.mp3",
   "./songs/fighter.mp3",
   "./songs/beast.mp3"
+  "./songs/badte_chalo.mp3",
+  "./songs/Jana_Gana_Mana.mp3",
+  "./songs/Challa.mp3",
+  "./songs/Bharat_ki_beti.mp3",
+  "./songs/Tiranga.mp3",
+  "./songs/vandemaataram.mp3"
+  
 
 ];
+
 
 

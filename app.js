@@ -32,6 +32,39 @@ songs.forEach(song => {
   playlist.appendChild(li);
 });
 
+async function saveSongToDB(url, blob) {
+  const db = await new Promise((resolve, reject) => {
+    const req = indexedDB.open("music-db", 1);
+    req.onupgradeneeded = e => {
+      e.target.result.createObjectStore("songs");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject();
+  });
+
+  const tx = db.transaction("songs", "readwrite");
+  tx.objectStore("songs").put(blob, url);
+}
+
+async function getSongFromDB(url) {
+  const db = await new Promise((resolve, reject) => {
+    const req = indexedDB.open("music-db", 1);
+    req.onupgradeneeded = e => {
+      e.target.result.createObjectStore("songs");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject();
+  });
+
+  return new Promise(resolve => {
+    const req = db.transaction("songs").objectStore("songs").get(url);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null);
+  });
+}
+
+
+
 
 
 

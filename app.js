@@ -7,7 +7,7 @@ const songs = [
   { title: "Sarileru Neekevaru", file: "songs/sarileru_neekevaru.mp3" },
   { title: "Desh Pehle", file: "songs/desh_pehle.mp3" },
   { title: "Maan Bharyaa", file: "songs/mann_bharryaa_shershaah.mp3" },
-  { title: "Jawan", file: "songs/intiki_okkadu_kavale.mp3" },
+  { title: "Jawan", file: "songs/intike_okkadu_kavale.mp3" },
   { title: "Heer Aasmani", file: "songs/heer_aasmani_fighter.mp3" },
   { title: "Le Teri Mitti", file: "songs/mitti_fighter.mp3" },
   { title: "Terapai Prakasham", file: "songs/beast_mode.mp3" },
@@ -31,6 +31,7 @@ songs.forEach(song => {
 
   playlist.appendChild(li);
 });
+
 
 
 

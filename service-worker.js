@@ -1,4 +1,4 @@
-const CACHE_NAME = "music-pwa-v7";
+const CACHE_NAME = "music-pwa-v8";
 
 const FILES_TO_CACHE = [
   "./",
@@ -22,6 +22,7 @@ const FILES_TO_CACHE = [
   "./songs/tiranga_yodha.mp3",
   "./songs/vande_mataram.mp3"
 ];
+
 
 
 

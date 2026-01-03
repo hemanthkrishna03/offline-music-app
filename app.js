@@ -1,19 +1,19 @@
 const songs = [
-  { title: "Amma Song", file: "songs/Amma_song.mp3" },
-  { title: "Aigiri Song", file: "songs/Aigiri_song.mp3" },
-  { title: "Prema Deshapu yuvarani", file: "songs/Prema_Deshapu_yuvarani.mp3" }
-  { title: "Kandhon Se Milte", file: "songs/Kandhon Se Milte Hain Kandhe Lakshya.mp3" },
-  { title: "O sainika", file: "songs/sainika.mp3" },
-  { title: "Sarileru Neekevaru", file: "songs/Sarileru_Neekevvaru.mp3" },
-  { title: "Desh Pehle", file: "songs/Desh_Pehle.mp3" },
-  { title: "Maan Bharyaa", file: "songs/Mann Bharryaa 2.0 Shershaah.mp3" },
-  { title: "Jawan", file: "songs/Intiki Okkadu Kavale.mp3" },
-  { title: "Heer Aasmani", file: "songs/Heer Aasmani Fighter.mp3" },
-  { title: "Le teri Mitti", file: "songs/Mitti Fighter.mp3" },
-  { title: "terapai prakasham", file: "songs/Beast Mode.mp3" },
-  { title: "Jana Gana Mana", file: "songs/Jana Gana Mana major.mp3" },
-  { title: "Tiranga", file: "songs/Tiranga Yodha.mp3" },
-  { title: "Vande Mataram", file: "songs/Vande Mataram.mp3" }
+  { title: "Amma Song", file: "songs/amma_song.mp3" },
+  { title: "Aigiri Song", file: "songs/aigiri_song.mp3" },
+  { title: "Prema Deshapu Yuvarani", file: "songs/prema_deshapu_yuvarani.mp3" },
+  { title: "Kandhon Se Milte", file: "songs/kandhon_se_milte.mp3" },
+  { title: "O Sainika", file: "songs/sainika.mp3" },
+  { title: "Sarileru Neekevaru", file: "songs/sarileru_neekevaru.mp3" },
+  { title: "Desh Pehle", file: "songs/desh_pehle.mp3" },
+  { title: "Maan Bharyaa", file: "songs/mann_bharryaa_shershaah.mp3" },
+  { title: "Jawan", file: "songs/intiki_okkadu_kavale.mp3" },
+  { title: "Heer Aasmani", file: "songs/heer_aasmani_fighter.mp3" },
+  { title: "Le Teri Mitti", file: "songs/mitti_fighter.mp3" },
+  { title: "Terapai Prakasham", file: "songs/beast_mode.mp3" },
+  { title: "Jana Gana Mana", file: "songs/jana_gana_mana_major.mp3" },
+  { title: "Tiranga", file: "songs/tiranga_yodha.mp3" },
+  { title: "Vande Mataram", file: "songs/vande_mataram.mp3" }
 ];
 
 const audio = document.getElementById("audio");
@@ -31,6 +31,7 @@ songs.forEach(song => {
 
   playlist.appendChild(li);
 });
+
 
 
 

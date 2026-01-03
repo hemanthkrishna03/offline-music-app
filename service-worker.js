@@ -1,27 +1,29 @@
-const CACHE_NAME = "music-pwa-v6"; // change version
+const CACHE_NAME = "music-pwa-v7";
+
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.json",
-  "./songs/Amma_song.mp3",
-  "./songs/Aigiri_song.mp3",
-  "./songs/Prema_Deshapu_yuvarani.mp3",
-  "./songs/Kandhon Se Milte Hain Kandhe Lakshya.mp3",
+  "./songs/amma_song.mp3",
+  "./songs/aigiri_song.mp3",
+  "./songs/prema_deshapu_yuvarani.mp3",
+  "./songs/kandhon_se_milte.mp3",
   "./songs/sainika.mp3",
-  "./songs/Sarileru_Neekevvaru.mp3",
-  "./songs/Desh Pehle.mp3",
-  "./songs/Mann Bharryaa 2.0 Shershaah.mp3",
-  "./songs/Intiki Okkadu Kavale.mp3",
-  "./songs/Heer Aasmani Fighter.mp3",
-  "./songs/Mitti Fighter.mp3",
-  "./songs/Beast Mode.mp3",
-  "./songs/Jana Gana Mana major.mp3",
-  "./songs/Tiranga Yodha.mp3",
-  "./songs/Vande Mataram.mp3"
-  
+  "./songs/sarileru_neekevaru.mp3",
+  "./songs/desh_pehle.mp3",
+  "./songs/mann_bharryaa_shershaah.mp3",
+  "./songs/intiki_okkadu_kavale.mp3",
+  "./songs/heer_aasmani_fighter.mp3",
+  "./songs/mitti_fighter.mp3",
+  "./songs/beast_mode.mp3",
+  "./songs/jana_gana_mana_major.mp3",
+  "./songs/tiranga_yodha.mp3",
+  "./songs/vande_mataram.mp3"
 ];
+
+
 
 
 

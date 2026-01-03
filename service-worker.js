@@ -1,31 +1,24 @@
-const CACHE_NAME = "music-pwa-v11";
+const CACHE_NAME = "music-pwa-final-v1";
 
 self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(key => caches.delete(key)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("fetch", event => {
-  const request = event.request;
-
-  // Only handle audio files
-  if (request.url.endsWith(".mp3")) {
+  // Handle ONLY mp3 files for offline
+  if (event.request.url.endsWith(".mp3")) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
-        cache.match(request).then(response => {
+        cache.match(event.request).then(response => {
           if (response) {
-            return response; // offline play
+            return response; // offline hit
           }
-          return fetch(request).then(networkResponse => {
-            cache.put(request, networkResponse.clone()); // cache on play
+          return fetch(event.request).then(networkResponse => {
+            cache.put(event.request, networkResponse.clone());
             return networkResponse;
           });
         })
@@ -34,8 +27,8 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Default behavior for other files
+  // Default: network first, cache fallback
   event.respondWith(
-    caches.match(request).then(response => response || fetch(request))
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });

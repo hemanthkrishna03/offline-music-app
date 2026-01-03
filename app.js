@@ -19,53 +19,68 @@ const songs = [
 const audio = document.getElementById("audio");
 const playlist = document.getElementById("playlist");
 
-songs.forEach(song => {
-  const li = document.createElement("li");
-  li.textContent = song.title;
+/* ===========================
+   IndexedDB Helper Functions
+=========================== */
 
-  li.addEventListener("click", () => {
-    audio.src = song.file;
-    audio.load();   // 🔑 VERY IMPORTANT
-    audio.play().catch(err => console.log(err));
+async function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("music-db", 1);
+
+    request.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("songs")) {
+        db.createObjectStore("songs");
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject("IndexedDB error");
   });
-
-  playlist.appendChild(li);
-});
+}
 
 async function saveSongToDB(url, blob) {
-  const db = await new Promise((resolve, reject) => {
-    const req = indexedDB.open("music-db", 1);
-    req.onupgradeneeded = e => {
-      e.target.result.createObjectStore("songs");
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject();
-  });
-
+  const db = await openDB();
   const tx = db.transaction("songs", "readwrite");
   tx.objectStore("songs").put(blob, url);
+
+  await new Promise(resolve => (tx.oncomplete = resolve));
 }
 
 async function getSongFromDB(url) {
-  const db = await new Promise((resolve, reject) => {
-    const req = indexedDB.open("music-db", 1);
-    req.onupgradeneeded = e => {
-      e.target.result.createObjectStore("songs");
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject();
-  });
-
+  const db = await openDB();
   return new Promise(resolve => {
     const req = db.transaction("songs").objectStore("songs").get(url);
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => resolve(req.result || null);
     req.onerror = () => resolve(null);
   });
 }
 
+/* ===========================
+   Playlist Rendering
+=========================== */
 
+songs.forEach(song => {
+  const li = document.createElement("li");
+  li.textContent = song.title;
 
+  li.addEventListener("click", async () => {
+    let blob = await getSongFromDB(song.file);
 
+    if (!blob) {
+      const response = await fetch(song.file);
+      blob = await response.blob();
+      await saveSongToDB(song.file, blob);
+    }
 
+    // Clean previous blob URL (important for mobile)
+    if (audio.src && audio.src.startsWith("blob:")) {
+      URL.revokeObjectURL(audio.src);
+    }
 
+    audio.src = URL.createObjectURL(blob);
+    audio.play();
+  });
 
+  playlist.appendChild(li);
+});

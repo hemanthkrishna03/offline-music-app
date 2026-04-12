@@ -12,28 +12,48 @@
 
 <body>
 
+  <body>
+
   <h2>🎧 Offline Music App</h2>
 
-  <!-- Audio Player -->
-  <audio id="audio" controls></audio>
+  <!-- 🎧 Player Card -->
+  <div class="player">
+    <audio id="audio" controls></audio>
 
-  <!-- Folders Section -->
+    <div class="controls">
+      <button onclick="playPrevious()">⏮</button>
+      <button onclick="playNext()">⏭</button>
+      <button onclick="toggleShuffle()">🔀</button>
+      <button onclick="toggleRepeat()">🔁</button>
+    </div>
+  </div>
+
+  <!-- 🔍 Search -->
+  <input 
+    type="text" 
+    id="search" 
+    placeholder="🔍 Search songs..." 
+    oninput="searchSongs()" 
+  />
+
+  <!-- 📁 Folders -->
   <h3>📁 Folders</h3>
   <button onclick="createFolder()">➕ Create Folder</button>
   <ul id="folders"></ul>
 
-  <!-- Songs Section -->
+  <!-- 🎵 Songs -->
   <h3>🎵 Songs</h3>
   <ul id="playlist"></ul>
 
   <script src="app.js"></script>
 
-  <!-- Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js");
     }
   </script>
+
+</body>
 
 </body>
 </html>

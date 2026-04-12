@@ -1,3 +1,6 @@
+let currentIndex = 0;
+let isShuffle = false;
+let isRepeat = false;
 const songs = [
   { title: "Aigiri Song", file: "songs/aigiri_song.mp3" },
   { title: "Amma Song", file: "songs/amma_song.mp3" },
@@ -158,35 +161,122 @@ async function openDB() {
 const audio = document.getElementById("audio");
 const playlist = document.getElementById("playlist");
 
+// 👇 ADD HERE
+audio.addEventListener("ended", () => {
+  currentIndex++;
+
+  if (currentIndex >= songs.length) {
+    currentIndex = 0;
+  }
+
+  const nextSong = songs[currentIndex];
+  playSong(nextSong.file);
+});
 /* ===========================
    PLAY FUNCTION
 =========================== */
-function playSong(file) {
+function playSong(file, element = null) {
   audio.src = file;
   audio.load();
   audio.play();
+
+  // remove old highlight
+  document.querySelectorAll("li").forEach(li => li.classList.remove("playing"));
+
+  // highlight current
+  if (element) element.classList.add("playing");
 }
+
+// ✅ 👉 ADD YOUR FUNCTIONS HERE
+function playNext() {
+  if (isShuffle) {
+    currentIndex = Math.floor(Math.random() * songs.length);
+  } else {
+    currentIndex = (currentIndex + 1) % songs.length;
+  }
+
+  playSong(songs[currentIndex].file);
+}
+
+function playPrevious() {
+  currentIndex = (currentIndex - 1 + songs.length) % songs.length;
+  playSong(songs[currentIndex].file);
+}
+
+function toggleShuffle() {
+  isShuffle = !isShuffle;
+  alert("Shuffle: " + (isShuffle ? "ON" : "OFF"));
+}
+
+function toggleRepeat() {
+  isRepeat = !isRepeat;
+  alert("Repeat: " + (isRepeat ? "ON" : "OFF"));
+}
+
+audio.addEventListener("ended", () => {
+  if (isRepeat) {
+    playSong(songs[currentIndex].file);
+  } else {
+    playNext();
+  }
+});
+// rest of your code (folders, render, etc...)
+
 
 /* ===========================
    RENDER SONGS
 =========================== */
+let currentViewSongs = [...songs]; // songs currently shown
+let baseSongs = [...songs]; // original reference
+
 function renderSongs(songList, currentFolder = null) {
   playlist.innerHTML = "";
 
   songList.forEach(song => {
     const li = document.createElement("li");
 
+    // 👉 CLICK ANYWHERE → PLAY
+    li.onclick = () => playSong(song.file);
+
     li.innerHTML = `
       <span>${song.title}</span>
       <div>
-        <button onclick="playSong('${song.file}')">▶</button>
-        <button onclick="addToFolder('${song.file}')">➕</button>
-        ${currentFolder ? `<button onclick="removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
+        <button onclick="event.stopPropagation(); playSong('${song.file}')">▶</button>
+        <button onclick="event.stopPropagation(); addToFolder('${song.file}')">➕</button>
+        ${currentFolder ? `<button onclick="event.stopPropagation(); removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
       </div>
     `;
 
     playlist.appendChild(li);
   });
+}
+
+function searchSongs() {
+  const query = document.getElementById("search").value.toLowerCase();
+
+  if (query === "") {
+    renderSongs(baseSongs); // 👈 restore full list
+    return;
+  }
+
+  const filtered = baseSongs.filter(song =>
+    song.title.toLowerCase().includes(query)
+  );
+
+  renderSongs(filtered);
+} 
+
+function toggleSearch() {
+  const searchBox = document.getElementById("search");
+
+  if (searchBox.style.display === "block") {
+    searchBox.style.display = "none";
+    searchBox.value = "";
+    renderSongs(baseSongs); // reset songs
+  } else {
+    searchBox.style.display = "block";
+    searchBox.focus(); // auto focus
+  }
 }
 
 // Initial load
@@ -259,6 +349,7 @@ async function openFolder(folderName) {
   const paths = await getFolderSongs(folderName);
   const filteredSongs = songs.filter(s => paths.includes(s.file));
 
+  baseSongs = filteredSongs; // 👈 important
   renderSongs(filteredSongs, folderName);
 }
 

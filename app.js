@@ -102,7 +102,30 @@ const songs = [
   { title: "Kurchi Madathapetti", file: "songs/Kurchi_Madathapetti.mp3" },
   { title: "Mawaa Enthaina", file: "songs/Mawaa_Enthaina.mp3" },
   { title: "Ramana Aei", file: "songs/Ramana_Aei.mp3" },
-  { title: "Amma", file: "songs/Amma.mp3" }
+  { title: "Amma", file: "songs/Amma.mp3" },
+  { title: "Har Har Shambhu", file: "songs/Har_Har_Shambhu.mp3" },
+  { title: "Hara Hara Eshwara", file: "songs/Hara_Hara_Eshwara.mp3" },
+  { title: "Om Mahaprana", file: "songs/Om_Mahaprana.mp3" },
+  { title: "Akhila Charachara", file: "songs/Akhila_Charachara.mp3" },
+  { title: "Omkaram", file: "songs/Omkaram.mp3" },
+  { title: "Akhila Characharaa", file: "songs/Akhila_Characharaa.mp3" },
+  { title: "Lingashtakam", file: "songs/Lingashtakam.mp3" },
+  { title: "Kala Bhairava", file: "songs/Kala_Bhairava.mp3" },
+  { title: "Aigiri Nandini", file: "songs/Aigiri_Nandini.mp3" },
+  { title: "Lalitha Sahasra", file: "songs/Lalitha_Sahasra.mp3" },
+  { title: "Manideepavarnana", file: "songs/Manideepavarnana.mp3" },
+  { title: "Amma Bhavani", file: "songs/Amma_Bhavani.mp3" },
+  { title: "Sri Ramadootha", file: "songs/Sri_Ramadootha.mp3" },
+  { title: "Hanuman Chalisa", file: "songs/Hanuman_Chalisa.mp3" },
+  { title: "Avakaya Anjaneya", file: "songs/Avakaya_Anjaneya.mp3" },
+  { title: "Anjanadri", file: "songs/Anjanadri.mp3" },
+  { title: "Raghunandana", file: "songs/Raghunandana.mp3" },
+  { title: "Ramachadraya", file: "songs/Ramachadraya.mp3" },
+  { title: "Bhadra Sheela", file: "songs/Bhadra_Sheela.mp3" },
+  { title: "Shuddha Brahma", file: "songs/Shuddha_Brahma.mp3" },
+  { title: "Vinudu Vinudu", file: "songs/Vinudu_Vinudu.mp3" },
+  { title: "Mukundha", file: "songs/Mukundha.mp3" },
+  { title: "Jaya Janardhana", file: "songs/Jaya_Janardhana.mp3" }
 ];
 
 /* ===========================

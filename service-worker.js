@@ -1,7 +1,18 @@
-const CACHE_NAME = "music-pwa-v501";
+const CACHE_NAME = "music-pwa-v601";
 
-// Install → cache basic files
+const FILES_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./styles.css",
+  "./app.js",
+  "./manifest.json"
+];
+
+// Install → cache core files
 self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+  );
   self.skipWaiting();
 });
 
@@ -10,11 +21,11 @@ self.addEventListener("activate", event => {
   event.waitUntil(self.clients.claim());
 });
 
-// Fetch handler (VERY IMPORTANT)
+// Fetch handler
 self.addEventListener("fetch", event => {
   const req = event.request;
 
-  // 🎵 Handle MP3 files (offline support)
+  // 🎵 Handle MP3 files
   if (req.url.endsWith(".mp3")) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
@@ -31,8 +42,10 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // 🌐 Default (HTML/CSS/JS)
+  // 🌐 Handle app files
   event.respondWith(
-    fetch(req).catch(() => caches.match(req))
+    caches.match(req).then(res => {
+      return res || fetch(req);
+    })
   );
 });

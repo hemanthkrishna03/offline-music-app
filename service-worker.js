@@ -1,4 +1,4 @@
-const CACHE_NAME = "music-pwa-v500";
+const CACHE_NAME = "music-pwa-v501";
 
 // Install → cache basic files
 self.addEventListener("install", event => {

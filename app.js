@@ -147,7 +147,7 @@ const songs = [
   { title: "Shuddha Brahma", file: "songs/Shuddha_Brahma.mp3" },
   { title: "Vinudu Vinudu", file: "songs/Vinudu_Vinudu.mp3" },
   { title: "Mukundha", file: "songs/Mukundha.mp3" },
-  { title: "Jaya Janardhana", file: "songs/Jaya_Janardhana.mp3" }
+  { title: "Jaya Janardhana", file: "songs/Jaya_Janardhana.mp3" },
   { title: "I Wanna Fly", file: "songs/I_Wanna_Fly.mp3" },
   { title: "Inthaku Nuvvevaru", file: "songs/Inthaku_Nuvvevaru.mp3" },
   { title: "Laka Laka Lakumikara", file: "songs/Laka_Laka_Lakumikara.mp3" },

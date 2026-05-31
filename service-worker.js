@@ -33,7 +33,12 @@ self.addEventListener("fetch", event => {
           if (res) return res;
 
           return fetch(req).then(networkRes => {
-            cache.put(req, networkRes.clone());
+            fetch(event.request).then(networkResponse => {
+                if (networkResponse.ok && networkResponse.status === 200) {
+                    cache.put(event.request, networkResponse.clone());
+                }
+                return networkResponse;
+            });
             return networkRes;
           });
         })

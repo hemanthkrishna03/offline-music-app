@@ -178,7 +178,7 @@ const songs = [
   { title: "Bullet Song", file: "songs/Bullet_Song.mp3" },
   { title: "Chuda Chakkagunnave", file: "songs/Chuda_chakkagunnave.mp3" },
   { title: "Crazy Feeling", file: "songs/Crazy_feeling.mp3" },
-  { title: "Dhaari Choodu", file: "songs/Dhaari Choodu.mp3" },
+  { title: "Dhaari Choodu", file: "songs/Dhaari_Choodu.mp3" },
   { title: "Dinchak", file: "songs/Dinchak.mp3" },
   { title: "Em Cheppanu", file: "songs/Em_Cheppanu.mp3" },
   { title: "Family Party", file: "songs/Family_Party.mp3" },

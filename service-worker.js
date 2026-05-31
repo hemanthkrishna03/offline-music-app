@@ -1,4 +1,4 @@
-const CACHE_NAME = "music-pwa-v601";
+const CACHE_NAME = "music-pwa-v602";
 
 const FILES_TO_CACHE = [
   "./",

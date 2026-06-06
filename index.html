@@ -17,11 +17,17 @@
   <h2>🎧 Offline Music App</h2>
 
   <!-- 🎧 Player Card -->
-  <div class="player">
-    <audio id="audio" controls></audio>
+  <audio id="audio"></audio>
 
+  <div class="player">
+    <div id="songTitle">🎵 No song selected</div>
+  
+    <input type="range" id="progress" value="0" min="0" max="100">
+  
     <div class="controls">
       <button onclick="playPrevious()">⏮</button>
+      <button onclick="audio.play()">▶</button>
+      <button onclick="audio.pause()">⏸</button>
       <button onclick="playNext()">⏭</button>
       <button onclick="toggleShuffle()">🔀</button>
       <button onclick="toggleRepeat()">🔁</button>

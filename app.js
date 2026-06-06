@@ -444,6 +444,27 @@ const progress = document.getElementById("progress");
 const songTitle = document.getElementById("songTitle");
 const playlist = document.getElementById("playlist");
 
+// 👇 ADD HERE
+const playPauseBtn = document.getElementById("playPauseBtn");
+
+function togglePlayPause() {
+  if (audio.paused) {
+    audio.play();
+    playPauseBtn.innerHTML = "⏸";
+  } else {
+    audio.pause();
+    playPauseBtn.innerHTML = "▶";
+  }
+}
+
+audio.addEventListener("play", () => {
+  playPauseBtn.innerHTML = "⏸";
+});
+
+audio.addEventListener("pause", () => {
+  playPauseBtn.innerHTML = "▶";
+});
+
 /* ===========================
    PLAY FUNCTION
 =========================== */

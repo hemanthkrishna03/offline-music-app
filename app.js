@@ -442,32 +442,20 @@ async function openDB() {
 const audio = document.getElementById("audio");
 const playlist = document.getElementById("playlist");
 
-// 👇 ADD HERE
-audio.addEventListener("ended", () => {
-  currentIndex++;
-
-  if (currentIndex >= songs.length) {
-    currentIndex = 0;
-  }
-
-  const nextSong = songs[currentIndex];
-  playSong(nextSong.file);
-});
 /* ===========================
    PLAY FUNCTION
 =========================== */
 function playSong(file, element = null) {
+  currentIndex = songs.findIndex(song => song.file === file);
+
   audio.src = file;
   audio.load();
   audio.play();
 
-  // remove old highlight
   document.querySelectorAll("li").forEach(li => li.classList.remove("playing"));
 
-  // highlight current
   if (element) element.classList.add("playing");
 }
-
 // ✅ 👉 ADD YOUR FUNCTIONS HERE
 function playNext() {
   if (isShuffle) {

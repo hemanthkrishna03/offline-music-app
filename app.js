@@ -452,11 +452,14 @@ function playSong(file, element = null) {
   audio.load();
   audio.play();
 
-  document.querySelectorAll("li").forEach(li => li.classList.remove("playing"));
+  document.querySelectorAll("li").forEach(li =>
+    li.classList.remove("playing")
+  );
 
-  if (element) element.classList.add("playing");
-}
-// ✅ 👉 ADD YOUR FUNCTIONS HERE
+  if (element) {
+    element.classList.add("playing");
+  }
+}// ✅ 👉 ADD YOUR FUNCTIONS HERE
 function playNext() {
   if (isShuffle) {
     currentIndex = Math.floor(Math.random() * songs.length);

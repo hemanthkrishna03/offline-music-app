@@ -440,6 +440,8 @@ async function openDB() {
    PLAYER
 =========================== */
 const audio = document.getElementById("audio");
+const progress = document.getElementById("progress");
+const songTitle = document.getElementById("songTitle");
 const playlist = document.getElementById("playlist");
 
 /* ===========================
@@ -452,6 +454,8 @@ function playSong(file, element = null) {
   audio.load();
   audio.play();
 
+  songTitle.textContent = "🎵 " + songs[currentIndex].title;
+  
   document.querySelectorAll("li").forEach(li =>
     li.classList.remove("playing")
   );
@@ -459,7 +463,18 @@ function playSong(file, element = null) {
   if (element) {
     element.classList.add("playing");
   }
-}// ✅ 👉 ADD YOUR FUNCTIONS HERE
+}
+audio.addEventListener("timeupdate", () => {
+  if (audio.duration) {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+  }
+});
+
+progress.addEventListener("input", () => {
+  audio.currentTime = (progress.value / 100) * audio.duration;
+});
+
+// ✅ 👉 ADD YOUR FUNCTIONS HERE
 function playNext() {
   if (isShuffle) {
     currentIndex = Math.floor(Math.random() * songs.length);

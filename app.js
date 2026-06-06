@@ -409,7 +409,7 @@ const songs = [
   { title: "Dochestha", file: "songs/Dochestha.mp3" },
   { title: "Anaganaganaga", file: "songs/Anaganaganaga.mp3" },
   { title: "Peniviti", file: "songs/Peniviti.mp3" },
-  { title: "Reddy lkkada Soodu", file: "songs/Reddy_lkkada_Soodu.mp3" },
+  { title: "Reddy lkkada Soodu", file: "songs/Reddy_lkkada_Soodu.mp3" }
 ];
 
 /* ===========================

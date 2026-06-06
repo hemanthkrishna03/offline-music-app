@@ -4,7 +4,6 @@ let isRepeat = false;
 const songs = [
   { title: "Aigiri Song", file: "songs/aigiri_song.mp3" },
   { title: "Amma Song", file: "songs/amma_song.mp3" },
-  { title: "Beast Mode", file: "songs/beast_mode.mp3" },
   { title: "Desh Pehle", file: "songs/desh_pehle.mp3" },
   { title: "Heer Aasmani", file: "songs/heer_aasmani_fighter.mp3" },
   { title: "Jawan", file: "songs/intike_okkadu_kavale.mp3" },

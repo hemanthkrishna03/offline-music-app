@@ -12,10 +12,48 @@ h2 {
 }
 
 .player {
-  background: #1e293b;
-  padding: 10px;
-  border-radius: 12px;
+  background: #181818;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+#songTitle {
+  text-align: center;
+  font-size: 18px;
   margin-bottom: 15px;
+  color: white;
+  font-weight: bold;
+}
+
+#progress {
+  width: 100%;
+  accent-color: #1DB954; /* Spotify green */
+  margin-bottom: 15px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.controls button {
+  background: #1DB954;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.controls button:hover {
+  transform: scale(1.15);
+  background: #1ed760;
 }
 
 audio {

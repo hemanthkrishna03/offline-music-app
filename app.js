@@ -265,7 +265,7 @@ const songs = [
   { title: "Arere Vaanaa", file: "songs/Arere_Vaanaa.mp3" },
   { title: "Nee Yadalo Naaku", file: "songs/Nee_Yadalo_Naaku.mp3" },
   { title: "Chinnadana Neekosam", file: "songs/Chinnadana_Neekosam.mp3" },
-  { title: "Bugga Chinnadana Neekosam", file: "songs/Bugga_Chinnadana_Neekosam.mp3" },
+  { title: "Bugga Chinnadana Neekosam", file: "songs/Bugga_Buggagili.mp3" },
   { title: "Rang De", file: "songs/Rang_De.mp3" },
   { title: "Yaa Yaa", file: "songs/Yaa_Yaa.mp3" },
   { title: "Priyathama", file: "songs/Priyathama.mp3" },

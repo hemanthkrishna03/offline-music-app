@@ -438,7 +438,7 @@ const songs = [
   { title: "Tumse Milke", file: "songs/Tumse_Milke.mp3" },
   { title: "Aakaasam Nee", file: "songs/Aakaasam_Nee.mp3" },
   { title: "Kaatuka Kanule", file: "songs/Kaatuka_Kanule.mp3" },
-  { title: "Thappalle Unna", file: "songs/Thappalle_Unna.mp3" },
+  { title: "Thappalle Unna", file: "songs/Thappalle_Unna.mp3" }
 ];
 
 /* ===========================

@@ -442,7 +442,7 @@ const songs = [
   { title: "Singulu Singulu", file: "songs/Singilu_Singilu.mp3" },
   { title: "Jwala Reddy", file: "songs/Jwala_Reddy.mp3" },
   { title: "Hai Rabba", file: "songs/Hai_Rabba.mp3" },
-  { title: "Hum Jhummandhi Le", file: "songs/Jhum_Jhummandhi_Le.mp3" },
+  { title: "Jhum Jhummandhi Le", file: "songs/Jhum_Jhummandhi_Le.mp3" },
   { title: "Neelakashamlo", file: "songs/Neelakashamlo.mp3" }
 ];
 

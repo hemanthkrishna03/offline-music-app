@@ -629,7 +629,8 @@ const songs = [
   { title: "Yenniyalo Yenniyalo", file: "songs/Yenniyalo_Yenniyalo.mp3" },
   { title: "Yenti Yenti", file: "songs/Yenti_Yenti.mp3" },
   { title: "Ye Manishike Majili", file: "songs/Ye_Manishike_Majili.mp3" },
-  { title: "Yuddam Yuddam", file: "songs/Yuddam_Yuddam.mp3" }
+  { title: "Yuddam Yuddam", file: "songs/Yuddam_Yuddam.mp3" },
+  { title: "Veera Simha Reddy", file: "songs/Veera_Simha_Rapo.mp3" }
 
 ];
 

@@ -19,5 +19,9 @@ This is the error
 For that we need to execute the following cmd.
 git pull --rebase origin main
 git push
- 
+
+If You want to add more songs rather than one by one do the following steps
+1. Place all new songs in a new folder and run the below cmd in cmd prompt make sure that having the path of that new folder while running the     cmd and the cmd is "dir /b > filenames.txt"
+2. After running this cmd u will see a text file named "filenames.txt".
+3. Next run the Python file named "SongFormat" and u will see a output file named "appjs_entries.txt" in the Convert_Songs in that you will        find the all new song code format that should be pasted in the "app.js" file in github.   
   

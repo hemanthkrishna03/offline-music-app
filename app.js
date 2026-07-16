@@ -440,7 +440,10 @@ const songs = [
   { title: "Kaatuka Kanule", file: "songs/Kaatuka_Kanule.mp3" },
   { title: "Thappalle Unna", file: "songs/Thappalle_Unna.mp3" },
   { title: "Singulu Singulu", file: "songs/Singilu_Singilu.mp3" },
-  { title: "Jwala Reddy", file: "songs/Jwala_Reddy.mp3" }
+  { title: "Jwala Reddy", file: "songs/Jwala_Reddy.mp3" },
+  { title: "Hai Rabba", file: "songs/Hai_Rabba.mp3" },
+  { title: "Hum Jhummandhi Le", file: "songs/Jhum_Jhummandhi_Le.mp3" },
+  { title: "Neelakashamlo", file: "songs/Neelakashamlo.mp3" }
 ];
 
 /* ===========================

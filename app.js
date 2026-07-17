@@ -181,11 +181,10 @@ function renderSongs(songList, currentFolder = null) {
 
     // 👉 CLICK ANYWHERE → PLAY
     li.onclick = () => playSong(song.file);
-
+    
     li.innerHTML = `
       <span>${song.title}</span>
       <div>
-        <button onclick="event.stopPropagation(); playSong('${song.file}')">▶</button>
         <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">
             ↪
         </button>

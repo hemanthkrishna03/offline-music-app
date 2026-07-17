@@ -219,9 +219,10 @@ function renderSongs(songList, currentFolder = null) {
     li.innerHTML = `
       <span>${song.title}</span>
       <div>
+
         <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">↪</button>
-        <button onclick="event.stopPropagation(); downloadSong('${song.file}', '${song.title}')">↓</button>
         <button onclick="event.stopPropagation(); addToFolder('${song.file}')">➕</button>
+        <button onclick="event.stopPropagation(); downloadSong('${song.file}', '${song.title}')">↓</button>
         ${currentFolder ? `<button onclick="event.stopPropagation(); removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
       </div>
     `;

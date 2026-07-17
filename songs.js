@@ -626,5 +626,15 @@ window.songs = [
   { title: "Yenti Yenti", file: "songs/Yenti_Yenti.mp3" },
   { title: "Ye Manishike Majili", file: "songs/Ye_Manishike_Majili.mp3" },
   { title: "Yuddam Yuddam", file: "songs/Yuddam_Yuddam.mp3" },
-  { title: "Veera Simha Reddy", file: "songs/Veera_Simha_Rapo.mp3" }
+  { title: "Veera Simha Reddy", file: "songs/Veera_Simha_Rapo.mp3" },
+  { title: "Anaganagaa Akasham", file: "songs/Anaganagaa_Akash.mp3" },
+  { title: "Friendshippe Thiyani", file: "songs/Friendshippe_Thiyan.mp3" },
+  { title: "Gaajuvaka Pilla", file: "songs/Gaajuvaka_Pilla.mp3" },
+  { title: "Kontha Kalam", file: "songs/Kontha_Kalam.mp3" },
+  { title: "Niddura Pothunna", file: "songs/Niddura_Pothunna.mp3" },
+  { title: "Nuvve Nuvve", file: "songs/Samudrumanta.mp3" },
+  { title: "Pataley Pranami", file: "songs/Pataley_Pranami.mp3" },
+  { title: "Preminchanani", file: "songs/Preminchanani.mp3" },
+  { title: "Veyi Kannulatho", file: "songs/Veyi_Kannulatho.mp3" }
+
 ]

@@ -7,6 +7,7 @@
 
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <meta name="theme-color" content="#111827">
 </head>
 
@@ -25,12 +26,22 @@
     <input type="range" id="progress" value="0" min="0" max="100">
   
     <div class="controls">
-      <button onclick="playPrevious()">⏮</button>
-      <button type="button" id="playPauseBtn" onclick="togglePlayPause()">▶</button>
-      <button onclick="playNext()">⏭</button>
+      <button onclick="playPrevious()">
+        <i class="bi bi-skip-backward-fill"></i>
+      </button>
+
+      <button type="button" id="playPauseBtn" onclick="togglePlayPause()">
+        <i class="bi bi-play-fill"></i>
+      </button>
+
+      <button onclick="playNext()">
+        <i class="bi bi-skip-forward-fill"></i>
+      </button>
+
       <button onclick="toggleShuffle()">🔀</button>
+
       <button onclick="toggleRepeat()">🔁</button>
-    </div>
+    </div> 
   </div>
 
   <!-- 🔍 Search -->

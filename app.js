@@ -1,3 +1,4 @@
+const songs = window.songs
 let currentIndex = 0;
 let isShuffle = false;
 let isRepeat = false;

@@ -164,6 +164,25 @@ audio.addEventListener("ended", () => {
   }
 });
 
+function goTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+// Show button only after scrolling down
+window.addEventListener("scroll", () => {
+  const button = document.getElementById("topButton");
+
+  if (window.scrollY > 300) {
+    button.style.display = "block";
+  } else {
+    button.style.display = "none";
+  }
+});
+
 // rest of your code (folders, render, etc...)
 
 
@@ -181,13 +200,11 @@ function renderSongs(songList, currentFolder = null) {
 
     // 👉 CLICK ANYWHERE → PLAY
     li.onclick = () => playSong(song.file);
-    
+
     li.innerHTML = `
       <span>${song.title}</span>
       <div>
-        <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">
-            ↪
-        </button>
+        <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">↪</button>
         <button onclick="event.stopPropagation(); addToFolder('${song.file}')">➕</button>
         ${currentFolder ? `<button onclick="event.stopPropagation(); removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
       </div>

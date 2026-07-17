@@ -150,3 +150,20 @@ button:hover {
     background:#444;
 }
 
+#topButton {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: none;
+
+  font-size: 24px;
+  cursor: pointer;
+
+  z-index: 999;
+}

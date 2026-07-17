@@ -671,21 +671,20 @@ const playPauseBtn = document.getElementById("playPauseBtn");
 function togglePlayPause() {
   if (audio.paused) {
     audio.play();
-    playPauseBtn.innerHTML = "⏸";
+    playPauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
   } else {
     audio.pause();
-    playPauseBtn.innerHTML = "▶";
+    playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
   }
 }
 
 audio.addEventListener("play", () => {
-  playPauseBtn.innerHTML = "⏸";
+  playPauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
 });
 
 audio.addEventListener("pause", () => {
-  playPauseBtn.innerHTML = "▶";
+  playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
 });
-
 /* ===========================
    PLAY FUNCTION
 =========================== */

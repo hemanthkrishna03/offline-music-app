@@ -183,6 +183,21 @@ window.addEventListener("scroll", () => {
   }
 });
 
+function downloadSong(file, title) {
+
+  const link = document.createElement("a");
+
+  link.href = file;
+
+  link.download = title + ".mp3";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+}
+
 // rest of your code (folders, render, etc...)
 
 
@@ -205,6 +220,7 @@ function renderSongs(songList, currentFolder = null) {
       <span>${song.title}</span>
       <div>
         <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">↪</button>
+        <button onclick="event.stopPropagation(); downloadSong('${song.file}', '${song.title}')">↓</button>
         <button onclick="event.stopPropagation(); addToFolder('${song.file}')">➕</button>
         ${currentFolder ? `<button onclick="event.stopPropagation(); removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
       </div>

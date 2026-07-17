@@ -30,7 +30,7 @@
         <i class="bi bi-skip-backward-fill"></i>
       </button>
 
-      <button type="button" id="playPauseBtn" onclick="togglePlayPause()">
+      <button id="playPauseBtn" onclick="togglePlayPause()">
         <i class="bi bi-play-fill"></i>
       </button>
 
@@ -38,9 +38,28 @@
         <i class="bi bi-skip-forward-fill"></i>
       </button>
 
-      <button onclick="toggleShuffle()">🔀</button>
+      <!-- Play Next Queue -->
+      <button onclick="showQueue()">
+        <i class="bi bi-list-ul"></i>
+      </button>
 
-      <button onclick="toggleRepeat()">🔁</button>
+      <!-- Repeat -->
+      <button onclick="toggleRepeat()">
+        🔁
+      </button>
+
+      <!-- More -->
+      <div class="more-menu">
+        <button onclick="toggleMoreMenu()">
+          <i class="bi bi-three-dots-vertical"></i>
+        </button>
+
+        <div id="morePopup" class="popup-menu">
+          <button onclick="toggleShuffle()">
+            🔀 Shuffle
+          </button>
+        </div>
+      </div>
     </div> 
   </div>
 

@@ -1,6 +1,7 @@
 let currentIndex = 0;
 let isShuffle = false;
 let isRepeat = false;
+let playNextQueue = [];
 
 /* ===========================
    DATABASE
@@ -46,6 +47,28 @@ function togglePlayPause() {
     playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
   }
 }
+
+function toggleMoreMenu() {
+    const menu = document.getElementById("morePopup");
+
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+
+document.addEventListener("click", function(event){
+
+    const menu = document.getElementById("morePopup");
+    const more = document.querySelector(".more-menu");
+
+    if(!more.contains(event.target)){
+        menu.style.display="none";
+    }
+
+});
 
 audio.addEventListener("play", () => {
   playPauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
@@ -110,6 +133,28 @@ function toggleRepeat() {
   alert("Repeat: " + (isRepeat ? "ON" : "OFF"));
 }
 
+function addToPlayNext(songFile) {
+
+    // Don't add duplicates
+    if (playNextQueue.includes(songFile)) {
+        alert("Song is already in the Play Next queue.");
+        return;
+    }
+
+    playNextQueue.push(songFile);
+
+    alert(
+        songs.find(s => s.file === songFile).title +
+        " added to Play Next."
+    );
+}
+
+function showQueue(){
+    alert("Play Queue will be added in the next step.");
+}
+
+
+
 audio.addEventListener("ended", () => {
   if (isRepeat) {
     playSong(songs[currentIndex].file);
@@ -117,6 +162,7 @@ audio.addEventListener("ended", () => {
     playNext();
   }
 });
+
 // rest of your code (folders, render, etc...)
 
 
@@ -139,6 +185,9 @@ function renderSongs(songList, currentFolder = null) {
       <span>${song.title}</span>
       <div>
         <button onclick="event.stopPropagation(); playSong('${song.file}')">▶</button>
+        <button onclick="event.stopPropagation(); addToPlayNext('${song.file}')">
+            ↪
+        </button>
         <button onclick="event.stopPropagation(); addToFolder('${song.file}')">➕</button>
         ${currentFolder ? `<button onclick="event.stopPropagation(); removeFromFolder('${currentFolder}', '${song.file}')">❌</button>` : ""}
       </div>

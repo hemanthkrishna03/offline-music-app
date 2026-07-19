@@ -637,5 +637,8 @@ window.songs = [
   { title: "Preminchanani", file: "songs/Preminchanani.mp3" },
   { title: "Veyi Kannulatho", file: "songs/Veyi_Kannulatho.mp3" },
   { title: "Souraa", file: "songs/Souraa.mp3" },
+  { title: "Sara Sari", file: "songs/Sara_Sari.mp3" },
+  { title: "Whattey Beauty", file: "songs/Whattey_Beauty.mp3" }
+
 
 ]

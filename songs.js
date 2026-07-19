@@ -635,6 +635,7 @@ window.songs = [
   { title: "Nuvve Nuvve", file: "songs/Samudrumanta.mp3" },
   { title: "Pataley Pranami", file: "songs/Pataley_Pranami.mp3" },
   { title: "Preminchanani", file: "songs/Preminchanani.mp3" },
-  { title: "Veyi Kannulatho", file: "songs/Veyi_Kannulatho.mp3" }
+  { title: "Veyi Kannulatho", file: "songs/Veyi_Kannulatho.mp3" },
+  { title: "Souraa", file: "songs/Souraa.mp3" },
 
 ]

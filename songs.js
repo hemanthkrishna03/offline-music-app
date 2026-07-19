@@ -639,6 +639,5 @@ window.songs = [
   { title: "Souraa", file: "songs/Souraa.mp3" },
   { title: "Sara Sari", file: "songs/Sara_Sari.mp3" },
   { title: "Whattey Beauty", file: "songs/Whattey_Beauty.mp3" }
-
-
+  
 ]

@@ -638,6 +638,9 @@ window.songs = [
   { title: "Veyi Kannulatho", file: "songs/Veyi_Kannulatho.mp3" },
   { title: "Souraa", file: "songs/Souraa.mp3" },
   { title: "Sara Sari", file: "songs/Sara_Sari.mp3" },
-  { title: "Whattey Beauty", file: "songs/Whattey_Beauty.mp3" }
-  
+  { title: "Whattey Beauty", file: "songs/Whattey_Beauty.mp3" },
+  { title: "Paatashaala", file: "songs/Paatashaala.mp3" },
+  { title: "Power Of Youth", file: "songs/Power_Of_Youth.mp3" }
+
+
 ]

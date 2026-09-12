@@ -1,95 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Offline Music App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <meta name="theme-color" content="#111827">
+    <title>My Music</title>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
-  
+
 <body>
 
-  <body>
+    <!-- =========================
+         HOME SCREEN
+    ========================= -->
 
-  <h2>🎧 Offline Music App</h2>
+    <section id="homeScreen" class="home-screen">
 
-  <!-- 🎧 Player Card -->
-  <audio id="audio"></audio>
+        <header class="home-header">
+            <h1>Start with your <span>Vibe</span></h1>
+            <div class="header-line"></div>
+        </header>
 
-  <div class="player">
-    <div id="songTitle">🎵 No song selected</div>
-  
-    <input type="range" id="progress" value="0" min="0" max="100">
-  
-    <div class="controls">
-      <button onclick="playPrevious()">
-        <i class="bi bi-skip-backward-fill"></i>
-      </button>
+        <div class="category-grid">
 
-      <button id="playPauseBtn" onclick="togglePlayPause()">
-        <i class="bi bi-play-fill"></i>
-      </button>
+            <!-- All Songs -->
+            <button class="category-card all-songs"
+                    onclick="openCategory('allSongs')">
 
-      <button onclick="playNext()">
-        <i class="bi bi-skip-forward-fill"></i>
-      </button>
+                <div class="category-image">
+                    <img src="covers/all-songs.jpg" alt="All Songs">
+                </div>
 
-      <!-- Play Next Queue -->
-      <button onclick="showQueue()">
-        <i class="bi bi-list-ul"></i>
-      </button>
+                <div class="category-title">
+                    All Songs
+                </div>
 
-      <!-- Repeat -->
-      <button onclick="toggleRepeat()">
-        🔁
-      </button>
+            </button>
 
-      <!-- More -->
-      <div class="more-menu">
-        <button onclick="toggleMoreMenu()">
-          <i class="bi bi-three-dots-vertical"></i>
-        </button>
 
-        <div id="morePopup" class="popup-menu">
-          <button onclick="toggleShuffle()">
-            🔀 Shuffle
-          </button>
+            <!-- Recently Played -->
+            <button class="category-card recently-played"
+                    onclick="openCategory('recentlyPlayed')">
+
+                <div class="category-image">
+                    <img src="covers/recently-played.jpg"
+                         alt="Recently Played">
+                </div>
+
+                <div class="category-title">
+                    Recently Played
+                </div>
+
+            </button>
+
+
+            <!-- Favourite Hero -->
+            <button class="category-card favourite-hero"
+                    onclick="openCategory('favouriteHero')">
+
+                <div class="category-image">
+                    <img src="covers/favourite-hero.jpg"
+                         alt="Favourite Hero">
+                </div>
+
+                <div class="category-title">
+                    Favourite Hero
+                </div>
+
+            </button>
+
+
+            <!-- Playlists -->
+            <button class="category-card playlists"
+                    onclick="openCategory('playlists')">
+
+                <div class="category-image">
+                    <img src="covers/playlists.jpg"
+                         alt="Playlists">
+                </div>
+
+                <div class="category-title">
+                    Playlists
+                </div>
+
+            </button>
+
         </div>
-      </div>
-    </div> 
-  </div>
 
-  <!-- 🔍 Search -->
-  <input 
-    type="text" 
-    id="search" 
-    placeholder="🔍 Search songs..." 
-    oninput="searchSongs()" 
-  />
+    </section>
 
-  <!-- 📁 Folders -->
-  <h3>📁 Folders</h3>
-  <button onclick="createFolder()">➕ Create Folder</button>
-  <ul id="folders"></ul>
 
-  <!-- 🎵 Songs -->
-  <h3>🎵 Songs</h3>
-  <ul id="playlist"></ul>
-
-  <script src="songs.js"></script>
-  <script src="app.js"></script>
-
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js");
-    }
-  </script>
-  <button id="topButton" onclick="goTop()">↑</button>
-</body>
+    <!-- JavaScript -->
+    <script src="app.js"></script>
 
 </body>
 </html>

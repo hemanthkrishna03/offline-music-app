@@ -642,5 +642,5 @@ window.songs = [
   { title: "Paatashaala", file: "songs/Paatashaala.mp3" },
   { title: "Power Of Youth", file: "songs/Power_Of_Youth.mp3" }
 
-
+  
 ]

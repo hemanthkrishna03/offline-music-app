@@ -267,7 +267,7 @@ async function loadSongs() {
 
     const response =
       await fetch(
-        "songs_metadata1.json",
+        "metadata.json",
         {
           cache: "no-store"
         }

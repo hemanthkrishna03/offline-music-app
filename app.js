@@ -1,1722 +1,2387 @@
 /* =========================================================
-   MUSIC APP - APP.JS
-   =========================================================
-   Main sections:
-   1. Metadata
-   2. Home screen
-   3. Song list
-   4. Player
-   5. Queue
-   6. Recently Played
-   7. Favourite Hero
-   8. Playlists
+   MY MUSIC
+   All Songs + Mini Player + Queue + Playlists + More Options
    ========================================================= */
 
-
-/* =========================================================
-   1. GLOBAL VARIABLES
-========================================================= */
-
 let songs = [];
-let currentIndex = -1;
+let visibleSongs = [];
 
 let queue = [];
-let queueIndex = 0;
 
-let isPlaying = false;
+let currentIndex = -1;
+let currentSong = null;
+let currentList = [];
+
 let isLooping = false;
 let playNextEnabled = true;
 
-let currentCategory = "allSongs";
+let pendingPlaylistSong = null;
+let contextSong = null;
+
+let currentScreen = "home";
 
 
 /* =========================================================
-   DOM REFERENCES
-========================================================= */
+   ELEMENTS
+   ========================================================= */
 
-const homeScreen = document.getElementById("homeScreen");
-const songListScreen = document.getElementById("songListScreen");
+const homeScreen =
+  document.getElementById("homeScreen");
 
-const songList = document.getElementById("songList");
-const searchInput = document.getElementById("search");
+const songListScreen =
+  document.getElementById("songListScreen");
 
-const audio = document.getElementById("audio");
+const songList =
+  document.getElementById("songList");
 
-const albumCover = document.getElementById("albumCover");
-const songTitle = document.getElementById("songTitle");
-const songArtist = document.getElementById("songArtist");
-const songYear = document.getElementById("songYear");
+const categoryTitle =
+  document.getElementById("categoryTitle");
 
-const progress = document.getElementById("progress");
+const searchInput =
+  document.getElementById("search");
+
+const searchWrap =
+  document.getElementById("searchWrap");
+
+const backButton =
+  document.getElementById("backButton");
+
+const headerMenuButton =
+  document.getElementById("headerMenuButton");
+
+
+/* MINI PLAYER */
+
+const miniPlayer =
+  document.getElementById("miniPlayer");
+
+const miniCover =
+  document.getElementById("miniCover");
+
+const miniTitle =
+  document.getElementById("miniTitle");
+
+const miniArtist =
+  document.getElementById("miniArtist");
+
+const miniPlayButton =
+  document.getElementById("miniPlayButton");
+
+const miniLoopButton =
+  document.getElementById("miniLoopButton");
+
+const miniQueueButton =
+  document.getElementById("miniQueueButton");
+
+const miniSongButton =
+  document.getElementById("miniSongButton");
+
+
+/* FULL PLAYER */
+
+const playerScreen =
+  document.getElementById("playerScreen");
+
+const playerBackButton =
+  document.getElementById("playerBackButton");
+
+const playerQueueButton =
+  document.getElementById("playerQueueButton");
+
+const albumCover =
+  document.getElementById("albumCover");
+
+const songTitle =
+  document.getElementById("songTitle");
+
+const songArtist =
+  document.getElementById("songArtist");
+
+const songYear =
+  document.getElementById("songYear");
+
+const progress =
+  document.getElementById("progress");
 
 const currentTimeElement =
-    document.getElementById("currentTime");
+  document.getElementById("currentTime");
 
 const durationElement =
-    document.getElementById("duration");
+  document.getElementById("duration");
 
 const playButton =
-    document.getElementById("playButton");
+  document.getElementById("playButton");
 
 const nextButton =
-    document.getElementById("nextButton");
+  document.getElementById("nextButton");
 
 const previousButton =
-    document.getElementById("previousButton");
+  document.getElementById("previousButton");
 
 const loopButton =
-    document.getElementById("loopButton");
+  document.getElementById("loopButton");
+
+const playNextToggleButton =
+  document.getElementById("playNextToggleButton");
+
+
+/* AUDIO */
+
+const audio =
+  document.getElementById("audio");
+
+
+/* QUEUE */
+
+const queuePanel =
+  document.getElementById("queuePanel");
 
 const queueList =
-    document.getElementById("queueList");
+  document.getElementById("queueList");
 
-const playNextToggle =
-    document.getElementById("playNextToggle");
+const closeQueueButton =
+  document.getElementById("closeQueueButton");
+
+
+/* PLAYLIST */
+
+const playlistPanel =
+  document.getElementById("playlistPanel");
+
+const playlistList =
+  document.getElementById("playlistList");
+
+const closePlaylistButton =
+  document.getElementById("closePlaylistButton");
+
+
+/* MORE OPTIONS */
+
+const contextMenu =
+  document.getElementById("contextMenu");
 
 
 /* =========================================================
-   2. LOAD METADATA
-========================================================= */
+   HELPERS
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+function getSongId(song) {
+
+  if (!song) return "";
+
+  if (song.id !== undefined)
+    return String(song.id);
+
+  if (song.file)
+    return String(song.file);
+
+  return `${song.title || ""}_${song.year || ""}`;
+}
+
+
+function titleOf(song) {
+
+  return String(
+    song?.title ||
+    "Unknown Song"
+  );
+}
+
+
+function artistOf(song) {
+
+  if (Array.isArray(song?.Singers))
+    return song.Singers.join(", ");
+
+  return String(
+    song?.Singers ||
+    song?.singers ||
+    song?.artist ||
+    song?.artists ||
+    "Unknown Artist"
+  );
+}
+
+
+function coverOf(song) {
+
+  return String(
+    song?.cover ||
+    song?.coverArt ||
+    song?.albumCover ||
+    "covers/default.jpg"
+  );
+}
+
+
+function fileOf(song) {
+
+  return String(
+    song?.file ||
+    song?.url ||
+    song?.src ||
+    ""
+  );
+}
+
+
+function formatTime(seconds) {
+
+  if (
+    !Number.isFinite(seconds) ||
+    seconds < 0
+  ) {
+    return "0:00";
+  }
+
+  const minutes =
+    Math.floor(seconds / 60);
+
+  const secondsPart =
+    Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+
+  return `${minutes}:${secondsPart}`;
+}
+
+
+/* =========================================================
+   LOAD METADATA
+   ========================================================= */
 
 async function loadSongs() {
 
-    try {
+  try {
 
-        const response = await fetch("songs_metadata.json");
-
-        if (!response.ok) {
-            throw new Error(
-                `Metadata loading failed: ${response.status}`
-            );
+    const response =
+      await fetch(
+        "songs_metadata1.json",
+        {
+          cache: "no-store"
         }
+      );
 
-        songs = await response.json();
+    if (!response.ok) {
 
-        console.log(
-            `Loaded ${songs.length} songs`
-        );
-
-        initialiseApp();
-
-    } catch (error) {
-
-        console.error(
-            "Unable to load song metadata:",
-            error
-        );
-
-        showLoadingError();
+      throw new Error(
+        `Metadata loading failed: ${response.status}`
+      );
     }
+
+    songs =
+      await response.json();
+
+
+    /* Songs deleted through the UI */
+
+    const deleted =
+      new Set(
+        JSON.parse(
+          localStorage.getItem(
+            "deletedSongs"
+          ) || "[]"
+        )
+      );
+
+
+    songs =
+      songs.filter(
+        song =>
+          !deleted.has(
+            getSongId(song)
+          )
+      );
+
+
+    visibleSongs =
+      [...songs];
+
+
+    showHome();
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    songList.innerHTML =
+      `
+      <div class="empty-state">
+        Unable to load songs_metadata1.json.
+      </div>
+      `;
+  }
 }
 
 
 /* =========================================================
-   INITIALISE APP
-========================================================= */
+   HOME
+   ========================================================= */
 
-function initialiseApp() {
+function showHome() {
 
-    /*
-       The first screen should be the Home screen.
-    */
+  currentScreen = "home";
 
-    showHomeScreen();
+  homeScreen.classList.remove(
+    "hidden"
+  );
 
-    /*
-       Prepare the complete song collection.
-    */
+  songListScreen.classList.add(
+    "hidden"
+  );
 
-    queue = [...songs];
+  playerScreen.classList.add(
+    "hidden"
+  );
 
-    renderQueue();
+  closeContextMenu();
 }
 
 
 /* =========================================================
-   ERROR MESSAGE
-========================================================= */
+   LIST PAGE
+   ========================================================= */
 
-function showLoadingError() {
+function showList(title, list) {
 
-    if (songList) {
+  currentScreen = "list";
 
-        songList.innerHTML = `
-            <li class="empty-state">
-                Unable to load music library.
-            </li>
-        `;
+  homeScreen.classList.add(
+    "hidden"
+  );
+
+  playerScreen.classList.add(
+    "hidden"
+  );
+
+  songListScreen.classList.remove(
+    "hidden"
+  );
+
+
+  categoryTitle.textContent =
+    title;
+
+
+  searchWrap.classList.remove(
+    "hidden"
+  );
+
+
+  visibleSongs =
+    [...list];
+
+
+  renderSongs(
+    visibleSongs
+  );
+
+
+  window.scrollTo(
+    {
+      top: 0,
+      behavior: "instant"
     }
+  );
 }
 
-
-/* =========================================================
-   3. HOME SCREEN
-========================================================= */
-
-
-/*
-   Open a category from the Home screen.
-*/
-
-function openCategory(category) {
-
-    currentCategory = category;
-
-    switch (category) {
-
-        case "allSongs":
-            showAllSongs();
-            break;
-
-        case "recentlyPlayed":
-            showRecentlyPlayed();
-            break;
-
-        case "favouriteHero":
-            showFavouriteHeroes();
-            break;
-
-        case "playlists":
-            showPlaylists();
-            break;
-
-        default:
-            showAllSongs();
-            break;
-    }
-}
-
-
-/* =========================================================
-   SHOW HOME
-========================================================= */
-
-function showHomeScreen() {
-
-    if (homeScreen) {
-        homeScreen.style.display = "block";
-    }
-
-    if (songListScreen) {
-        songListScreen.style.display = "none";
-    }
-}
-
-
-/* =========================================================
-   SHOW SONG LIST SCREEN
-========================================================= */
-
-function showSongListScreen() {
-
-    if (homeScreen) {
-        homeScreen.style.display = "none";
-    }
-
-    if (songListScreen) {
-        songListScreen.style.display = "block";
-    }
-}
-
-
-/* =========================================================
-   BACK TO HOME
-========================================================= */
-
-function goHome() {
-
-    showHomeScreen();
-
-    currentCategory = "allSongs";
-}
-
-
-/* =========================================================
-   4. CATEGORY - ALL SONGS
-========================================================= */
 
 function showAllSongs() {
 
-    showSongListScreen();
-
-    renderSongs(songs);
-
-    updateCategoryTitle("All Songs");
+  showList(
+    "All Songs",
+    songs
+  );
 }
 
 
 /* =========================================================
-   5. CATEGORY - RECENTLY PLAYED
-========================================================= */
+   CATEGORY NAVIGATION
+   ========================================================= */
 
-function showRecentlyPlayed() {
+function openCategory(category) {
 
-    showSongListScreen();
-
-    const recentlyPlayed =
-        getRecentlyPlayed();
-
-    renderSongs(recentlyPlayed);
-
-    updateCategoryTitle("Recently Played");
-}
+  closeContextMenu();
 
 
-/* =========================================================
-   RECENTLY PLAYED STORAGE
-========================================================= */
+  if (category === "allSongs") {
 
-function getRecentlyPlayed() {
+    showAllSongs();
 
-    const stored =
-        localStorage.getItem("recentlyPlayed");
+    return;
+  }
 
-    if (!stored) {
-        return [];
-    }
 
-    try {
+  if (category === "recentlyPlayed") {
 
-        const ids = JSON.parse(stored);
+    const ids =
+      JSON.parse(
+        localStorage.getItem(
+          "recentlyPlayed"
+        ) || "[]"
+      );
 
-        return ids
-            .map(id =>
-                songs.find(song =>
-                    getSongId(song) === id
-                )
+
+    const list =
+      ids
+        .map(
+          id =>
+            songs.find(
+              song =>
+                getSongId(song) === id
             )
-            .filter(Boolean);
-
-    } catch {
-
-        return [];
-    }
-}
+        )
+        .filter(Boolean);
 
 
-/* =========================================================
-   ADD RECENTLY PLAYED
-========================================================= */
-
-function addRecentlyPlayed(song) {
-
-    if (!song) {
-        return;
-    }
-
-    const id = getSongId(song);
-
-    let recentlyPlayed =
-        getRecentlyPlayed()
-            .map(item => getSongId(item));
-
-    recentlyPlayed =
-        recentlyPlayed.filter(
-            itemId => itemId !== id
-        );
-
-    recentlyPlayed.unshift(id);
-
-    /*
-       Keep only the latest 50 songs.
-    */
-
-    recentlyPlayed =
-        recentlyPlayed.slice(0, 50);
-
-    localStorage.setItem(
-        "recentlyPlayed",
-        JSON.stringify(recentlyPlayed)
+    showList(
+      "Recently Played",
+      list
     );
+
+    return;
+  }
+
+
+  if (category === "playlists") {
+
+    showPlaylistsPage();
+
+    return;
+  }
+
+
+  if (category === "favouriteHero") {
+
+    showFavouriteHeroes();
+
+    return;
+  }
 }
 
 
 /* =========================================================
-   6. CATEGORY - FAVOURITE HERO
-========================================================= */
+   FAVOURITE HERO
+   ========================================================= */
 
 function showFavouriteHeroes() {
 
-    showSongListScreen();
+  const map =
+    new Map();
+
+
+  songs.forEach(song => {
+
+    const raw =
+      song.heroes ||
+      song.Heroes ||
+      song.hero ||
+      song.Hero ||
+      [];
+
 
     const heroes =
-        getFavouriteHeroes();
-
-    renderHeroList(heroes);
-
-    updateCategoryTitle("Favourite Hero");
-}
+      Array.isArray(raw)
+        ? raw
+        : [raw];
 
 
-/* =========================================================
-   GET HERO LIST
-========================================================= */
+    heroes
+      .filter(Boolean)
+      .forEach(hero => {
 
-function getFavouriteHeroes() {
+        const name =
+          String(hero).trim();
 
-    /*
-       We will use the metadata field "heroes"
-       if it exists.
 
-       Example:
+        if (!map.has(name))
+          map.set(name, []);
 
-       "heroes": [
-           "Hero Name"
-       ]
-    */
 
-    const heroMap = new Map();
+        map
+          .get(name)
+          .push(song);
+      });
 
-    songs.forEach(song => {
+  });
 
-        let heroes =
-            song.heroes ||
-            song.Heroes ||
-            song.hero ||
-            song.Hero ||
-            [];
 
-        if (!Array.isArray(heroes)) {
+  currentScreen = "list";
 
-            heroes = [
-                heroes
-            ];
-        }
+  homeScreen.classList.add(
+    "hidden"
+  );
 
-        heroes.forEach(hero => {
+  playerScreen.classList.add(
+    "hidden"
+  );
 
-            if (!hero) {
-                return;
-            }
+  songListScreen.classList.remove(
+    "hidden"
+  );
 
-            const name =
-                String(hero).trim();
+  searchWrap.classList.add(
+    "hidden"
+  );
 
-            if (!name) {
-                return;
-            }
+  categoryTitle.textContent =
+    "Favourite Hero";
 
-            if (!heroMap.has(name)) {
+  songList.innerHTML = "";
 
-                heroMap.set(name, {
-                    name: name,
-                    songs: []
-                });
-            }
 
-            heroMap
-                .get(name)
-                .songs
-                .push(song);
-        });
-    });
+  if (!map.size) {
 
-    return Array.from(
-        heroMap.values()
+    songList.innerHTML =
+      `
+      <div class="empty-state">
+        No favourite heroes available.
+      </div>
+      `;
+
+    return;
+  }
+
+
+  for (
+    const [hero, heroSongs]
+    of map
+  ) {
+
+    const row =
+      document.createElement(
+        "button"
+      );
+
+
+    row.className =
+      "playlist-item";
+
+
+    row.innerHTML =
+      `
+      <span>
+        ★ ${escapeHTML(hero)}
+      </span>
+
+      <span
+        style="
+          margin-left:auto;
+          color:#999
+        "
+      >
+        ${heroSongs.length}
+      </span>
+      `;
+
+
+    row.addEventListener(
+      "click",
+      () =>
+        showList(
+          hero,
+          heroSongs
+        )
     );
+
+
+    songList.appendChild(
+      row
+    );
+  }
 }
 
 
 /* =========================================================
-   RENDER HERO LIST
-========================================================= */
+   RENDER SONGS
+   ========================================================= */
 
-function renderHeroList(heroes) {
+function renderSongs(list) {
 
-    if (!songList) {
-        return;
-    }
+  songList.innerHTML = "";
 
-    songList.innerHTML = "";
 
-    if (!heroes.length) {
+  if (!list.length) {
 
-        songList.innerHTML = `
-            <li class="empty-state">
-                No heroes available.
-            </li>
-        `;
+    songList.innerHTML =
+      `
+      <div class="empty-state">
+        No songs available.
+      </div>
+      `;
 
-        return;
-    }
+    return;
+  }
 
-    heroes.forEach(hero => {
 
-        const li =
-            document.createElement("li");
+  list.forEach(song => {
 
-        li.className =
-            "hero-list-item";
+    const row =
+      document.createElement(
+        "div"
+      );
 
-        li.innerHTML = `
-            <div class="song-info">
-                <div class="song-details">
-                    <span class="title">
-                        ${escapeHTML(hero.name)}
-                    </span>
 
-                    <span class="artist">
-                        ${hero.songs.length} songs
-                    </span>
-                </div>
-            </div>
-        `;
+    row.className =
+      "song-row";
 
-        li.addEventListener(
-            "click",
-            () => {
 
-                renderSongs(hero.songs);
+    row.dataset.songId =
+      getSongId(song);
 
-                updateCategoryTitle(
-                    hero.name
-                );
-            }
-        );
 
-        songList.appendChild(li);
+    row.innerHTML =
+      `
+      <img
+        class="song-cover"
+        src="${escapeHTML(coverOf(song))}"
+        alt=""
+      >
+
+      <div class="song-details">
+
+        <span class="song-title">
+          ${escapeHTML(
+            titleOf(song)
+          )}
+        </span>
+
+        <span class="song-artist">
+          ${escapeHTML(
+            artistOf(song)
+          )}
+        </span>
+
+      </div>
+
+      <button
+        class="more-button"
+        aria-label="More options"
+        title="More options"
+      >
+        ⋮
+      </button>
+      `;
+
+
+    row.addEventListener(
+      "click",
+      () =>
+        playSong(
+          song,
+          list
+        )
+    );
+
+
+    row
+      .querySelector(
+        ".more-button"
+      )
+      .addEventListener(
+        "click",
+        event => {
+
+          event.stopPropagation();
+
+          openContextMenu(
+            event.currentTarget,
+            song
+          );
+        }
+      );
+
+
+    songList.appendChild(
+      row
+    );
+
+  });
+
+
+  highlightCurrentSong();
+}
+
+
+/* =========================================================
+   HIGHLIGHT CURRENT SONG
+   ========================================================= */
+
+function highlightCurrentSong() {
+
+  document
+    .querySelectorAll(
+      ".song-row"
+    )
+    .forEach(row => {
+
+      row.classList.toggle(
+        "playing",
+
+        currentSong &&
+        row.dataset.songId ===
+          getSongId(currentSong)
+      );
+
     });
 }
 
 
 /* =========================================================
-   7. CATEGORY - PLAYLISTS
-========================================================= */
+   MORE OPTIONS
+   ========================================================= */
 
-function showPlaylists() {
+function openContextMenu(
+  button,
+  song
+) {
 
-    showSongListScreen();
+  contextSong =
+    song;
 
-    renderPlaylists();
 
-    updateCategoryTitle("Playlists");
+  contextMenu.innerHTML =
+    `
+    <button data-action="download">
+      ↓ &nbsp; Download
+    </button>
+
+    <button data-action="loop">
+      ↻ &nbsp; Loop
+    </button>
+
+    <button data-action="playNext">
+      ⏭ &nbsp; Play Next
+    </button>
+
+    <button data-action="queue">
+      ☷ &nbsp; Add to Queue
+    </button>
+
+    <button data-action="playlist">
+      + &nbsp; Add to Playlist
+    </button>
+
+    <button data-action="delete">
+      🗑 &nbsp; Delete
+    </button>
+
+    <button
+      data-action="deleteDatabase"
+      class="danger"
+    >
+      ⚠ &nbsp; Delete from Database
+    </button>
+    `;
+
+
+  const rect =
+    button.getBoundingClientRect();
+
+
+  contextMenu.classList.remove(
+    "hidden"
+  );
+
+
+  const menuWidth =
+    Math.min(
+      280,
+      window.innerWidth - 28
+    );
+
+
+  let left =
+    rect.right - menuWidth;
+
+
+  let top =
+    rect.bottom + 6;
+
+
+  if (
+    left < 14
+  ) {
+    left = 14;
+  }
+
+
+  if (
+    top + 340 >
+    window.innerHeight
+  ) {
+
+    top =
+      rect.top - 340;
+  }
+
+
+  if (top < 14)
+    top = 14;
+
+
+  contextMenu.style.left =
+    `${left}px`;
+
+  contextMenu.style.top =
+    `${top}px`;
+
+
+  contextMenu
+    .querySelectorAll(
+      "button"
+    )
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () =>
+          handleContextAction(
+            button.dataset.action
+          )
+      );
+
+    });
+}
+
+
+function closeContextMenu() {
+
+  contextMenu.classList.add(
+    "hidden"
+  );
+
+  contextSong = null;
 }
 
 
 /* =========================================================
-   PLAYLIST STORAGE
-========================================================= */
+   MORE OPTIONS ACTIONS
+   ========================================================= */
+
+function handleContextAction(
+  action
+) {
+
+  const song =
+    contextSong;
+
+
+  closeContextMenu();
+
+
+  if (!song)
+    return;
+
+
+  switch (action) {
+
+    case "download":
+      downloadSong(song);
+      break;
+
+
+    case "loop":
+
+      currentSong = song;
+
+      isLooping = true;
+
+      updateLoopUI();
+
+      break;
+
+
+    case "playNext":
+
+      addPlayNext(song);
+
+      break;
+
+
+    case "queue":
+
+      addToQueue(song);
+
+      break;
+
+
+    case "playlist":
+
+      openPlaylistPicker(song);
+
+      break;
+
+
+    case "delete":
+
+      deleteSongFromCurrentView(
+        song
+      );
+
+      break;
+
+
+    case "deleteDatabase":
+
+      deleteSongFromDatabase(
+        song
+      );
+
+      break;
+  }
+}
+
+
+/* =========================================================
+   DOWNLOAD
+   ========================================================= */
+
+function downloadSong(song) {
+
+  const file =
+    fileOf(song);
+
+
+  if (!file) {
+
+    alert(
+      "No audio file is available for this song."
+    );
+
+    return;
+  }
+
+
+  const link =
+    document.createElement(
+      "a"
+    );
+
+
+  link.href = file;
+
+  link.download =
+    titleOf(song);
+
+
+  document.body.appendChild(
+    link
+  );
+
+  link.click();
+
+  link.remove();
+}
+
+
+/* =========================================================
+   PLAY NEXT
+   ========================================================= */
+
+function addPlayNext(song) {
+
+  if (!currentSong) {
+
+    playSong(
+      song,
+      songs
+    );
+
+    return;
+  }
+
+
+  const currentId =
+    getSongId(
+      currentSong
+    );
+
+
+  const index =
+    queue.findIndex(
+      item =>
+        getSongId(item) ===
+        currentId
+    );
+
+
+  if (index < 0) {
+
+    queue.push(song);
+
+  } else {
+
+    queue.splice(
+      index + 1,
+      0,
+      song
+    );
+  }
+
+
+  renderQueue();
+}
+
+
+/* =========================================================
+   QUEUE
+   ========================================================= */
+
+function addToQueue(song) {
+
+  const exists =
+    queue.some(
+      item =>
+        getSongId(item) ===
+        getSongId(song)
+    );
+
+
+  if (!exists) {
+
+    queue.push(song);
+
+    renderQueue();
+
+    alert(
+      `"${titleOf(song)}" added to queue.`
+    );
+
+  } else {
+
+    alert(
+      "This song is already in the queue."
+    );
+  }
+}
+
+
+/* =========================================================
+   DELETE FROM CURRENT VIEW
+   ========================================================= */
+
+function deleteSongFromCurrentView(
+  song
+) {
+
+  const id =
+    getSongId(song);
+
+
+  visibleSongs =
+    visibleSongs.filter(
+      item =>
+        getSongId(item) !== id
+    );
+
+
+  renderSongs(
+    visibleSongs
+  );
+}
+
+
+/* =========================================================
+   DELETE FROM DATABASE
+   ========================================================= */
+
+function deleteSongFromDatabase(
+  song
+) {
+
+  const confirmed =
+    confirm(
+      `Delete "${titleOf(song)}" from the database?`
+    );
+
+
+  if (!confirmed)
+    return;
+
+
+  const id =
+    getSongId(song);
+
+
+  const deleted =
+    new Set(
+      JSON.parse(
+        localStorage.getItem(
+          "deletedSongs"
+        ) || "[]"
+      )
+    );
+
+
+  deleted.add(id);
+
+
+  localStorage.setItem(
+    "deletedSongs",
+    JSON.stringify(
+      [...deleted]
+    )
+  );
+
+
+  songs =
+    songs.filter(
+      item =>
+        getSongId(item) !== id
+    );
+
+
+  visibleSongs =
+    visibleSongs.filter(
+      item =>
+        getSongId(item) !== id
+    );
+
+
+  queue =
+    queue.filter(
+      item =>
+        getSongId(item) !== id
+    );
+
+
+  if (
+    currentSong &&
+    getSongId(currentSong) === id
+  ) {
+
+    audio.pause();
+
+    currentSong = null;
+
+    currentIndex = -1;
+
+    miniPlayer.classList.add(
+      "hidden"
+    );
+  }
+
+
+  renderSongs(
+    visibleSongs
+  );
+
+
+  renderQueue();
+}
+
+
+/* =========================================================
+   PLAYLISTS
+   ========================================================= */
 
 function getPlaylists() {
 
-    const stored =
-        localStorage.getItem("playlists");
+  try {
 
-    if (!stored) {
-        return [];
-    }
-
-    try {
-
-        return JSON.parse(stored);
-
-    } catch {
-
-        return [];
-    }
-}
-
-
-/* =========================================================
-   RENDER PLAYLISTS
-========================================================= */
-
-function renderPlaylists() {
-
-    if (!songList) {
-        return;
-    }
-
-    const playlists =
-        getPlaylists();
-
-    songList.innerHTML = "";
-
-    if (!playlists.length) {
-
-        songList.innerHTML = `
-            <li class="empty-state">
-                No playlists created yet.
-            </li>
-        `;
-
-        return;
-    }
-
-    playlists.forEach(playlist => {
-
-        const li =
-            document.createElement("li");
-
-        li.innerHTML = `
-            <div class="song-info">
-                <div class="song-details">
-
-                    <span class="title">
-                        ${escapeHTML(
-                            playlist.name
-                        )}
-                    </span>
-
-                    <span class="artist">
-                        ${playlist.songs.length} songs
-                    </span>
-
-                </div>
-            </div>
-        `;
-
-        li.addEventListener(
-            "click",
-            () => {
-
-                const playlistSongs =
-                    playlist.songs
-                        .map(id =>
-                            songs.find(
-                                song =>
-                                    getSongId(song) === id
-                            )
-                        )
-                        .filter(Boolean);
-
-                renderSongs(
-                    playlistSongs
-                );
-
-                updateCategoryTitle(
-                    playlist.name
-                );
-            }
-        );
-
-        songList.appendChild(li);
-    });
-}
-
-
-/* =========================================================
-   8. RENDER SONGS
-========================================================= */
-
-function renderSongs(songArray) {
-
-    if (!songList) {
-        return;
-    }
-
-    songList.innerHTML = "";
-
-    if (!songArray.length) {
-
-        songList.innerHTML = `
-            <li class="empty-state">
-                No songs available.
-            </li>
-        `;
-
-        return;
-    }
-
-    songArray.forEach(
-        (song, index) => {
-
-            const li =
-                document.createElement("li");
-
-            li.dataset.songId =
-                getSongId(song);
-
-            /*
-               Song cover
-            */
-
-            const cover =
-                song.cover ||
-                song.coverArt ||
-                song.albumCover ||
-                "";
-
-            /*
-               Artist / singer
-            */
-
-            const artist =
-                song.Singers ||
-                song.singers ||
-                song.artist ||
-                song.artists ||
-                song.albumArtist ||
-                "Unknown Artist";
-
-            /*
-               Year
-            */
-
-            const year =
-                song.year ||
-                song.Year ||
-                "";
-
-            li.innerHTML = `
-                <div class="song-info">
-
-                    ${
-                        cover
-                        ?
-                        `
-                        <img
-                            src="${escapeAttribute(
-                                cover
-                            )}"
-                            alt=""
-                        >
-                        `
-                        :
-                        ""
-                    }
-
-                    <div class="song-details">
-
-                        <span class="title">
-                            ${escapeHTML(
-                                song.title ||
-                                "Unknown Song"
-                            )}
-                        </span>
-
-                        <span class="artist">
-                            ${escapeHTML(
-                                formatArtist(
-                                    artist
-                                )
-                            )}
-                            ${
-                                year
-                                ?
-                                ` • ${escapeHTML(
-                                    String(year)
-                                )}`
-                                :
-                                ""
-                            }
-                        </span>
-
-                    </div>
-
-                </div>
-            `;
-
-            li.addEventListener(
-                "click",
-                () => {
-
-                    playSong(
-                        song,
-                        songArray
-                    );
-                }
-            );
-
-            songList.appendChild(li);
-        }
+    return JSON.parse(
+      localStorage.getItem(
+        "playlists"
+      ) || "[]"
     );
 
-    highlightCurrentSong();
+  } catch {
+
+    return [];
+  }
+}
+
+
+function savePlaylists(
+  playlists
+) {
+
+  localStorage.setItem(
+    "playlists",
+    JSON.stringify(
+      playlists
+    )
+  );
 }
 
 
 /* =========================================================
-   UPDATE CATEGORY TITLE
-========================================================= */
+   PLAYLIST PAGE
+   ========================================================= */
 
-function updateCategoryTitle(title) {
+function showPlaylistsPage() {
 
-    const heading =
-        document.getElementById(
-            "categoryTitle"
+  currentScreen = "list";
+
+  homeScreen.classList.add(
+    "hidden"
+  );
+
+  playerScreen.classList.add(
+    "hidden"
+  );
+
+  songListScreen.classList.remove(
+    "hidden"
+  );
+
+  searchWrap.classList.add(
+    "hidden"
+  );
+
+  categoryTitle.textContent =
+    "Playlists";
+
+  songList.innerHTML = "";
+
+
+  const playlists =
+    getPlaylists();
+
+
+  if (!playlists.length) {
+
+    songList.innerHTML =
+      `
+      <div class="empty-state">
+        No playlists created yet.
+      </div>
+      `;
+
+    return;
+  }
+
+
+  playlists.forEach(
+    playlist => {
+
+      const button =
+        document.createElement(
+          "button"
         );
 
-    if (heading) {
-        heading.textContent = title;
-    }
-}
+
+      button.className =
+        "playlist-item";
 
 
-/* =========================================================
-   9. SEARCH
-========================================================= */
+      button.innerHTML =
+        `
+        <span>
+          📁 ${escapeHTML(
+            playlist.name
+          )}
+        </span>
 
-if (searchInput) {
+        <span
+          style="
+            margin-left:auto;
+            color:#999
+          "
+        >
+          ${playlist.songs.length}
+        </span>
+        `;
 
-    searchInput.addEventListener(
-        "input",
+
+      button.addEventListener(
+        "click",
         () => {
 
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
+          const playlistSongs =
+            playlist.songs
+              .map(
+                id =>
+                  songs.find(
+                    song =>
+                      getSongId(song) === id
+                  )
+              )
+              .filter(Boolean);
 
-            const filtered =
-                songs.filter(song => {
 
-                    const title =
-                        String(
-                            song.title || ""
-                        ).toLowerCase();
-
-                    const artist =
-                        String(
-                            song.Singers ||
-                            song.singers ||
-                            song.artist ||
-                            ""
-                        ).toLowerCase();
-
-                    const album =
-                        String(
-                            song.album ||
-                            ""
-                        ).toLowerCase();
-
-                    return (
-                        title.includes(query) ||
-                        artist.includes(query) ||
-                        album.includes(query)
-                    );
-                });
-
-            renderSongs(filtered);
+          showList(
+            playlist.name,
+            playlistSongs
+          );
         }
+      );
+
+
+      songList.appendChild(
+        button
+      );
+
+    }
+  );
+}
+
+
+/* =========================================================
+   PLAYLIST PICKER
+   ========================================================= */
+
+function openPlaylistPicker(
+  song
+) {
+
+  pendingPlaylistSong =
+    song;
+
+
+  const playlists =
+    getPlaylists();
+
+
+  playlistList.innerHTML =
+    "";
+
+
+  if (!playlists.length) {
+
+    playlistList.innerHTML =
+      `
+      <div class="empty-state">
+        No playlist folders exist yet.
+      </div>
+      `;
+
+  } else {
+
+    playlists.forEach(
+      playlist => {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+
+        button.className =
+          "playlist-item";
+
+
+        button.innerHTML =
+          `
+          <span>
+            📁 ${escapeHTML(
+              playlist.name
+            )}
+          </span>
+
+          <span
+            style="
+              margin-left:auto;
+              color:#999
+            "
+          >
+            ${playlist.songs.length}
+          </span>
+          `;
+
+
+        button.addEventListener(
+          "click",
+          () =>
+            addPendingSongToPlaylist(
+              playlist.name
+            )
+        );
+
+
+        playlistList.appendChild(
+          button
+        );
+
+      }
     );
+  }
+
+
+  playlistPanel.classList.remove(
+    "hidden"
+  );
 }
 
 
 /* =========================================================
-   10. PLAY SONG
-========================================================= */
+   ADD SONG TO PLAYLIST
+   ========================================================= */
 
-function playSong(song, songArray = songs) {
+function addPendingSongToPlaylist(
+  name
+) {
 
-    if (!song) {
-        return;
-    }
+  if (!pendingPlaylistSong)
+    return;
 
-    /*
-       Make the current list the playback list.
-    */
 
-    queue = [...songArray];
+  const playlists =
+    getPlaylists();
 
-    currentIndex =
-        queue.findIndex(
-            item =>
-                getSongId(item) ===
-                getSongId(song)
-        );
 
-    if (currentIndex < 0) {
-        currentIndex = 0;
-    }
+  const playlist =
+    playlists.find(
+      item =>
+        item.name === name
+    );
 
-    const file =
-        song.file ||
-        song.url ||
-        song.src;
 
-    if (!file) {
+  if (!playlist)
+    return;
 
-        console.error(
-            "Song file not found:",
-            song
-        );
 
-        return;
-    }
+  const id =
+    getSongId(
+      pendingPlaylistSong
+    );
 
-    /*
-       Set audio source.
-    */
 
-    if (audio) {
+  if (
+    !playlist.songs.includes(id)
+  ) {
 
-        audio.src = file;
+    playlist.songs.push(id);
 
-        audio.load();
+  }
 
-        audio.play()
-            .then(() => {
 
-                isPlaying = true;
+  savePlaylists(
+    playlists
+  );
 
-                updatePlayButton();
 
-            })
-            .catch(error => {
+  const addedSong =
+    pendingPlaylistSong;
 
-                console.error(
-                    "Playback failed:",
-                    error
-                );
-            });
-    }
 
-    /*
-       Update player information.
-    */
+  pendingPlaylistSong =
+    null;
 
-    updatePlayer(song);
 
-    /*
-       Store recently played.
-    */
+  playlistPanel.classList.add(
+    "hidden"
+  );
 
-    addRecentlyPlayed(song);
 
-    /*
-       Highlight the current song.
-    */
-
-    highlightCurrentSong();
-
-    /*
-       Update queue.
-    */
-
-    renderQueue();
+  alert(
+    `"${titleOf(addedSong)}" added to ${name}.`
+  );
 }
 
 
 /* =========================================================
-   UPDATE PLAYER
-========================================================= */
+   QUEUE UI
+   ========================================================= */
 
-function updatePlayer(song) {
+function renderQueue() {
 
-    if (!song) {
-        return;
-    }
+  queueList.innerHTML =
+    "";
 
-    if (albumCover) {
 
-        const cover =
-            song.cover ||
-            song.coverArt ||
-            song.albumCover ||
-            "";
+  if (!queue.length) {
 
-        if (cover) {
+    queueList.innerHTML =
+      `
+      <div class="empty-state">
+        Queue is empty.
+      </div>
+      `;
 
-            albumCover.src =
-                cover;
+    return;
+  }
 
-            albumCover.alt =
-                song.title ||
-                "Album cover";
+
+  queue.forEach(
+    song => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "queue-item";
+
+
+      button.innerHTML =
+        `
+        <img
+          src="${escapeHTML(
+            coverOf(song)
+          )}"
+          alt=""
+        >
+
+        <span
+          style="
+            min-width:0
+          "
+        >
+
+          <strong
+            style="
+              display:block;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              white-space:nowrap
+            "
+          >
+            ${escapeHTML(
+              titleOf(song)
+            )}
+          </strong>
+
+          <small
+            style="
+              display:block;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              white-space:nowrap
+            "
+          >
+            ${escapeHTML(
+              artistOf(song)
+            )}
+          </small>
+
+        </span>
+        `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          playSong(
+            song,
+            queue
+          );
+
+          closeQueue();
         }
+      );
+
+
+      queueList.appendChild(
+        button
+      );
+
     }
+  );
+}
 
 
-    if (songTitle) {
+function openQueue() {
 
-        songTitle.textContent =
-            song.title ||
-            "Unknown Song";
-    }
+  renderQueue();
 
-
-    if (songArtist) {
-
-        const artist =
-            song.Singers ||
-            song.singers ||
-            song.artist ||
-            song.artists ||
-            song.albumArtist ||
-            "Unknown Artist";
-
-        songArtist.textContent =
-            formatArtist(artist);
-    }
+  queuePanel.classList.remove(
+    "hidden"
+  );
+}
 
 
-    if (songYear) {
+function closeQueue() {
 
-        songYear.textContent =
-            song.year ||
-            song.Year ||
-            "";
-    }
+  queuePanel.classList.add(
+    "hidden"
+  );
 }
 
 
 /* =========================================================
-   FORMAT ARTIST
-========================================================= */
+   PLAY SONG
+   ========================================================= */
 
-function formatArtist(artist) {
+function playSong(
+  song,
+  list = songs
+) {
 
-    if (Array.isArray(artist)) {
+  if (!song)
+    return;
 
-        return artist.join(", ");
-    }
 
-    return String(artist);
+  currentSong =
+    song;
+
+
+  currentList =
+    [...list];
+
+
+  queue =
+    [...list];
+
+
+  const id =
+    getSongId(song);
+
+
+  currentIndex =
+    queue.findIndex(
+      item =>
+        getSongId(item) === id
+    );
+
+
+  if (currentIndex < 0)
+    currentIndex = 0;
+
+
+  const file =
+    fileOf(song);
+
+
+  if (!file) {
+
+    alert(
+      "This song does not have an audio file path in the metadata."
+    );
+
+    return;
+  }
+
+
+  audio.src =
+    file;
+
+
+  audio.load();
+
+
+  audio.play()
+    .catch(
+      error =>
+        console.warn(
+          "Playback was not started automatically:",
+          error
+        )
+    );
+
+
+  addRecentlyPlayed(
+    song
+  );
+
+
+  updatePlayer(
+    song
+  );
+
+
+  updateMiniPlayer();
+
+  highlightCurrentSong();
+
+  renderQueue();
 }
 
 
 /* =========================================================
-   11. PLAY / PAUSE
-========================================================= */
+   RECENTLY PLAYED
+   ========================================================= */
+
+function addRecentlyPlayed(
+  song
+) {
+
+  const id =
+    getSongId(song);
+
+
+  const ids =
+    JSON.parse(
+      localStorage.getItem(
+        "recentlyPlayed"
+      ) || "[]"
+    )
+    .filter(
+      item =>
+        item !== id
+    );
+
+
+  ids.unshift(id);
+
+
+  localStorage.setItem(
+    "recentlyPlayed",
+    JSON.stringify(
+      ids.slice(0, 50)
+    )
+  );
+}
+
+
+/* =========================================================
+   FULL PLAYER
+   ========================================================= */
+
+function updatePlayer(
+  song
+) {
+
+  albumCover.src =
+    coverOf(song);
+
+  albumCover.alt =
+    titleOf(song);
+
+
+  songTitle.textContent =
+    titleOf(song);
+
+
+  songArtist.textContent =
+    artistOf(song);
+
+
+  songYear.textContent =
+    song.year &&
+    song.year !== "Unknown"
+      ? song.year
+      : "";
+}
+
+
+function openFullPlayer() {
+
+  if (!currentSong)
+    return;
+
+
+  playerScreen.classList.remove(
+    "hidden"
+  );
+
+  homeScreen.classList.add(
+    "hidden"
+  );
+
+  songListScreen.classList.add(
+    "hidden"
+  );
+
+
+  updatePlayer(
+    currentSong
+  );
+}
+
+
+function closeFullPlayer() {
+
+  playerScreen.classList.add(
+    "hidden"
+  );
+
+
+  if (
+    currentScreen ===
+    "home"
+  ) {
+
+    showHome();
+
+  } else {
+
+    homeScreen.classList.add(
+      "hidden"
+    );
+
+    songListScreen.classList.remove(
+      "hidden"
+    );
+  }
+}
+
+
+/* =========================================================
+   MINI PLAYER
+   ========================================================= */
+
+function updateMiniPlayer() {
+
+  if (!currentSong) {
+
+    miniPlayer.classList.add(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  miniPlayer.classList.remove(
+    "hidden"
+  );
+
+
+  miniCover.src =
+    coverOf(currentSong);
+
+
+  miniCover.alt =
+    titleOf(currentSong);
+
+
+  miniTitle.textContent =
+    titleOf(currentSong);
+
+
+  miniArtist.textContent =
+    artistOf(currentSong);
+
+
+  miniPlayButton.textContent =
+    audio.paused
+      ? "▶"
+      : "❚❚";
+
+
+  updateLoopUI();
+}
+
+
+function updateLoopUI() {
+
+  miniLoopButton.classList.toggle(
+    "mini-loop-active",
+    isLooping
+  );
+
+
+  loopButton.classList.toggle(
+    "active",
+    isLooping
+  );
+}
+
+
+/* =========================================================
+   PLAYBACK
+   ========================================================= */
 
 function togglePlayPause() {
 
-    if (!audio) {
-        return;
+  if (!currentSong) {
+
+    if (songs.length) {
+
+      playSong(
+        songs[0],
+        songs
+      );
     }
 
-    if (!audio.src) {
+    return;
+  }
 
-        if (queue.length) {
 
-            playSong(
-                queue[0],
-                queue
-            );
-        }
+  if (audio.paused) {
 
-        return;
-    }
+    audio.play();
 
-    if (audio.paused) {
+  } else {
 
-        audio.play();
-
-        isPlaying = true;
-
-    } else {
-
-        audio.pause();
-
-        isPlaying = false;
-    }
-
-    updatePlayButton();
+    audio.pause();
+  }
 }
 
-
-/* =========================================================
-   PLAY BUTTON
-========================================================= */
-
-if (playButton) {
-
-    playButton.addEventListener(
-        "click",
-        togglePlayPause
-    );
-}
-
-
-/* =========================================================
-   AUDIO PLAY
-========================================================= */
-
-if (audio) {
-
-    audio.addEventListener(
-        "play",
-        () => {
-
-            isPlaying = true;
-
-            updatePlayButton();
-        }
-    );
-
-
-    audio.addEventListener(
-        "pause",
-        () => {
-
-            isPlaying = false;
-
-            updatePlayButton();
-        }
-    );
-
-
-    audio.addEventListener(
-        "ended",
-        () => {
-
-            isPlaying = false;
-
-            handleSongEnded();
-        }
-    );
-
-
-    audio.addEventListener(
-        "loadedmetadata",
-        () => {
-
-            updateDuration();
-        }
-    );
-
-
-    audio.addEventListener(
-        "timeupdate",
-        () => {
-
-            updateProgress();
-        }
-    );
-}
-
-
-/* =========================================================
-   UPDATE PLAY BUTTON
-========================================================= */
-
-function updatePlayButton() {
-
-    if (!playButton) {
-        return;
-    }
-
-    playButton.textContent =
-        isPlaying
-        ? "❚❚"
-        : "▶";
-}
-
-
-/* =========================================================
-   12. NEXT SONG
-========================================================= */
 
 function playNext() {
 
-    if (!queue.length) {
-        return;
-    }
+  if (!queue.length)
+    return;
 
-    /*
-       If play-next is disabled,
-       don't automatically advance.
-    */
 
-    if (
-        !playNextEnabled &&
-        !isLooping
-    ) {
-        return;
-    }
+  if (isLooping) {
 
-    /*
-       Loop current song.
-    */
+    audio.currentTime = 0;
 
-    if (isLooping) {
+    audio.play();
 
-        const currentSong =
-            queue[currentIndex];
+    return;
+  }
 
-        playSong(
-            currentSong,
-            queue
-        );
 
-        return;
-    }
+  if (!playNextEnabled) {
 
-    currentIndex++;
+    audio.pause();
 
-    /*
-       End of queue.
-    */
+    updateMiniPlayer();
 
-    if (currentIndex >= queue.length) {
+    return;
+  }
 
-        currentIndex = 0;
-    }
 
-    playSong(
-        queue[currentIndex],
-        queue
-    );
+  currentIndex++;
+
+
+  if (
+    currentIndex >=
+    queue.length
+  ) {
+
+    currentIndex = 0;
+  }
+
+
+  playSong(
+    queue[currentIndex],
+    queue
+  );
 }
 
-
-if (nextButton) {
-
-    nextButton.addEventListener(
-        "click",
-        playNext
-    );
-}
-
-
-/* =========================================================
-   13. PREVIOUS SONG
-========================================================= */
 
 function playPrevious() {
 
-    if (!queue.length) {
-        return;
-    }
-
-    /*
-       If song has already played
-       for more than 3 seconds,
-       restart it.
-    */
-
-    if (
-        audio &&
-        audio.currentTime > 3
-    ) {
-
-        audio.currentTime = 0;
-
-        return;
-    }
-
-    currentIndex--;
-
-    if (currentIndex < 0) {
-
-        currentIndex =
-            queue.length - 1;
-    }
-
-    playSong(
-        queue[currentIndex],
-        queue
-    );
-}
+  if (!queue.length)
+    return;
 
 
-if (previousButton) {
+  if (
+    audio.currentTime > 3
+  ) {
 
-    previousButton.addEventListener(
-        "click",
-        playPrevious
-    );
+    audio.currentTime = 0;
+
+    return;
+  }
+
+
+  currentIndex--;
+
+
+  if (currentIndex < 0) {
+
+    currentIndex =
+      queue.length - 1;
+  }
+
+
+  playSong(
+    queue[currentIndex],
+    queue
+  );
 }
 
 
 /* =========================================================
-   SONG ENDED
-========================================================= */
-
-function handleSongEnded() {
-
-    if (isLooping) {
-
-        playNext();
-
-        return;
-    }
-
-    if (!playNextEnabled) {
-
-        updatePlayButton();
-
-        return;
-    }
-
-    playNext();
-}
-
-
-/* =========================================================
-   14. LOOP
-========================================================= */
-
-function toggleLoop() {
-
-    isLooping =
-        !isLooping;
-
-    updateLoopButton();
-}
-
-
-function updateLoopButton() {
-
-    if (!loopButton) {
-        return;
-    }
-
-    loopButton.classList.toggle(
-        "active",
-        isLooping
-    );
-}
-
-
-if (loopButton) {
-
-    loopButton.addEventListener(
-        "click",
-        toggleLoop
-    );
-}
-
-
-/* =========================================================
-   15. PROGRESS BAR
-========================================================= */
+   PROGRESS
+   ========================================================= */
 
 function updateProgress() {
 
-    if (!audio || !progress) {
-        return;
-    }
-
-    if (!audio.duration) {
-        return;
-    }
-
-    const percentage =
-        (
-            audio.currentTime /
-            audio.duration
-        ) * 100;
-
-    progress.value =
-        percentage;
-
-    updateCurrentTime();
-}
+  if (!audio.duration)
+    return;
 
 
-function updateCurrentTime() {
+  progress.value =
+    (
+      audio.currentTime /
+      audio.duration
+    ) * 100;
 
-    if (!audio || !currentTimeElement) {
-        return;
-    }
 
-    currentTimeElement.textContent =
-        formatTime(
-            audio.currentTime
-        );
+  currentTimeElement.textContent =
+    formatTime(
+      audio.currentTime
+    );
 }
 
 
 function updateDuration() {
 
-    if (!audio || !durationElement) {
-        return;
-    }
+  durationElement.textContent =
+    formatTime(
+      audio.duration
+    );
+}
 
-    durationElement.textContent =
-        formatTime(
-            audio.duration
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+
+
+/* HOME CATEGORIES */
+
+document
+  .querySelectorAll(
+    ".category-card"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () =>
+        openCategory(
+          button.dataset.category
+        )
+    );
+
+  });
+
+
+/* BACK */
+
+backButton.addEventListener(
+  "click",
+  showHome
+);
+
+
+/* HEADER QUEUE */
+
+headerMenuButton.addEventListener(
+  "click",
+  openQueue
+);
+
+
+/* SEARCH */
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    const q =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    const filtered =
+      songs.filter(song => {
+
+        const title =
+          titleOf(song)
+            .toLowerCase();
+
+
+        const artist =
+          artistOf(song)
+            .toLowerCase();
+
+
+        const album =
+          String(
+            song.album || ""
+          ).toLowerCase();
+
+
+        return (
+          title.includes(q) ||
+          artist.includes(q) ||
+          album.includes(q)
         );
-}
+      });
 
 
-/* =========================================================
-   SEEK
-========================================================= */
+    visibleSongs =
+      filtered;
 
-if (progress) {
 
-    progress.addEventListener(
-        "input",
-        () => {
-
-            if (!audio || !audio.duration) {
-                return;
-            }
-
-            const percentage =
-                Number(
-                    progress.value
-                );
-
-            audio.currentTime =
-                (
-                    percentage / 100
-                ) *
-                audio.duration;
-        }
+    renderSongs(
+      filtered
     );
-}
+  }
+);
 
 
-/* =========================================================
-   FORMAT TIME
-========================================================= */
+/* MINI PLAYER */
 
-function formatTime(seconds) {
-
-    if (
-        !Number.isFinite(seconds) ||
-        seconds < 0
-    ) {
-        return "0:00";
-    }
-
-    const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
-    const remainingSeconds =
-        Math.floor(
-            seconds % 60
-        );
-
-    return (
-        `${minutes}:` +
-        `${String(
-            remainingSeconds
-        ).padStart(2, "0")}`
-    );
-}
+miniSongButton.addEventListener(
+  "click",
+  openFullPlayer
+);
 
 
-/* =========================================================
-   16. QUEUE
-========================================================= */
+miniPlayButton.addEventListener(
+  "click",
+  event => {
 
-function addToQueue(song) {
+    event.stopPropagation();
 
-    if (!song) {
-        return;
-    }
-
-    queue.push(song);
-
-    renderQueue();
-}
+    togglePlayPause();
+  }
+);
 
 
-/* =========================================================
-   REMOVE FROM QUEUE
-========================================================= */
+miniLoopButton.addEventListener(
+  "click",
+  event => {
 
-function removeFromQueue(index) {
+    event.stopPropagation();
 
-    if (
-        index < 0 ||
-        index >= queue.length
-    ) {
-        return;
-    }
+    isLooping =
+      !isLooping;
 
-    queue.splice(
-        index,
-        1
-    );
-
-    if (
-        currentIndex >= queue.length
-    ) {
-        currentIndex =
-            queue.length - 1;
-    }
-
-    renderQueue();
-}
+    updateLoopUI();
+  }
+);
 
 
-/* =========================================================
-   RENDER QUEUE
-========================================================= */
+miniQueueButton.addEventListener(
+  "click",
+  event => {
 
-function renderQueue() {
+    event.stopPropagation();
 
-    if (!queueList) {
-        return;
-    }
-
-    queueList.innerHTML = "";
-
-    queue.forEach(
-        (song, index) => {
-
-            const li =
-                document.createElement("li");
-
-            li.dataset.index =
-                index;
-
-            const artist =
-                song.Singers ||
-                song.singers ||
-                song.artist ||
-                song.albumArtist ||
-                "Unknown Artist";
-
-            li.innerHTML = `
-                <div class="song-info">
-
-                    <div class="song-details">
-
-                        <span class="title">
-                            ${escapeHTML(
-                                song.title ||
-                                "Unknown Song"
-                            )}
-                        </span>
-
-                        <span class="artist">
-                            ${escapeHTML(
-                                formatArtist(
-                                    artist
-                                )
-                            )}
-                        </span>
-
-                    </div>
-
-                </div>
-            `;
-
-            li.addEventListener(
-                "click",
-                () => {
-
-                    playSong(
-                        song,
-                        queue
-                    );
-                }
-            );
-
-            queueList.appendChild(li);
-        }
-    );
-}
+    openQueue();
+  }
+);
 
 
-/* =========================================================
-   PLAY NEXT TOGGLE
-========================================================= */
+/* FULL PLAYER */
 
-function updatePlayNextState() {
+playerBackButton.addEventListener(
+  "click",
+  closeFullPlayer
+);
 
-    if (!playNextToggle) {
-        return;
-    }
+
+playerQueueButton.addEventListener(
+  "click",
+  openQueue
+);
+
+
+playButton.addEventListener(
+  "click",
+  togglePlayPause
+);
+
+
+nextButton.addEventListener(
+  "click",
+  playNext
+);
+
+
+previousButton.addEventListener(
+  "click",
+  playPrevious
+);
+
+
+loopButton.addEventListener(
+  "click",
+  () => {
+
+    isLooping =
+      !isLooping;
+
+    updateLoopUI();
+  }
+);
+
+
+playNextToggleButton.addEventListener(
+  "click",
+  () => {
 
     playNextEnabled =
-        playNextToggle.checked;
-}
+      !playNextEnabled;
 
 
-if (playNextToggle) {
-
-    playNextToggle.addEventListener(
-        "change",
-        updatePlayNextState
+    playNextToggleButton.classList.toggle(
+      "active",
+      playNextEnabled
     );
-}
+  }
+);
 
 
-/* =========================================================
-   17. HIGHLIGHT CURRENT SONG
-========================================================= */
+/* PROGRESS */
 
-function highlightCurrentSong() {
+progress.addEventListener(
+  "input",
+  () => {
 
-    if (!songList) {
-        return;
+    if (audio.duration) {
+
+      audio.currentTime =
+        (
+          Number(
+            progress.value
+          ) / 100
+        ) *
+        audio.duration;
     }
-
-    const items =
-        songList.querySelectorAll(
-            "li[data-song-id]"
-        );
-
-    items.forEach(item => {
-
-        const isCurrent =
-            currentIndex >= 0 &&
-            queue[currentIndex] &&
-            item.dataset.songId ===
-            getSongId(
-                queue[currentIndex]
-            );
-
-        item.classList.toggle(
-            "playing",
-            isCurrent
-        );
-    });
-}
+  }
+);
 
 
-/* =========================================================
-   18. SONG ID
-========================================================= */
+/* QUEUE */
 
-function getSongId(song) {
+closeQueueButton.addEventListener(
+  "click",
+  closeQueue
+);
 
-    if (!song) {
-        return "";
+
+queuePanel.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target ===
+      queuePanel
+    ) {
+
+      closeQueue();
     }
+  }
+);
 
-    /*
-       Prefer an explicit ID.
-    */
 
-    if (song.id !== undefined) {
+/* PLAYLIST */
 
-        return String(song.id);
+closePlaylistButton.addEventListener(
+  "click",
+  () =>
+    playlistPanel.classList.add(
+      "hidden"
+    )
+);
+
+
+playlistPanel.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target ===
+      playlistPanel
+    ) {
+
+      playlistPanel.classList.add(
+        "hidden"
+      );
     }
-
-    /*
-       Otherwise use the file path.
-    */
-
-    if (song.file) {
-
-        return String(song.file);
-    }
-
-    /*
-       Last fallback:
-       title + year
-    */
-
-    return (
-        `${song.title || ""}` +
-        "_" +
-        `${song.year || ""}`
-    );
-}
+  }
+);
 
 
-/* =========================================================
-   19. ESCAPE HTML
-========================================================= */
+/* AUDIO */
 
-function escapeHTML(value) {
-
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
+audio.addEventListener(
+  "play",
+  updateMiniPlayer
+);
 
 
-function escapeAttribute(value) {
+audio.addEventListener(
+  "pause",
+  updateMiniPlayer
+);
 
-    return escapeHTML(value);
-}
+
+audio.addEventListener(
+  "loadedmetadata",
+  updateDuration
+);
 
 
-/* =========================================================
-   20. KEYBOARD CONTROLS
-========================================================= */
+audio.addEventListener(
+  "timeupdate",
+  updateProgress
+);
+
+
+audio.addEventListener(
+  "ended",
+  playNext
+);
+
+
+/* CLOSE MENU WHEN CLICKING OUTSIDE */
 
 document.addEventListener(
-    "keydown",
-    event => {
+  "click",
+  event => {
 
-        /*
-           Don't interfere while typing.
-        */
+    if (
+      !contextMenu.contains(
+        event.target
+      ) &&
+      !event.target.closest(
+        ".more-button"
+      )
+    ) {
 
-        if (
-            event.target.tagName ===
-            "INPUT"
-        ) {
-            return;
-        }
-
-
-        /*
-           Space = Play / Pause
-        */
-
-        if (
-            event.code ===
-            "Space"
-        ) {
-
-            event.preventDefault();
-
-            togglePlayPause();
-        }
-
-
-        /*
-           Arrow Right = Next
-        */
-
-        if (
-            event.code ===
-            "ArrowRight"
-        ) {
-
-            playNext();
-        }
-
-
-        /*
-           Arrow Left = Previous
-        */
-
-        if (
-            event.code ===
-            "ArrowLeft"
-        ) {
-
-            playPrevious();
-        }
+      closeContextMenu();
     }
+  }
+);
+
+
+/* KEYBOARD */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.target.tagName ===
+      "INPUT"
+    )
+      return;
+
+
+    if (
+      event.code ===
+      "Space"
+    ) {
+
+      event.preventDefault();
+
+      togglePlayPause();
+    }
+
+
+    if (
+      event.code ===
+      "ArrowRight"
+    ) {
+
+      playNext();
+    }
+
+
+    if (
+      event.code ===
+      "ArrowLeft"
+    ) {
+
+      playPrevious();
+    }
+  }
 );
 
 
 /* =========================================================
-   21. PAGE VISIBILITY
-========================================================= */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        /*
-           We intentionally DO NOT pause
-           music when the browser tab becomes
-           hidden.
-
-           This allows normal background playback.
-        */
-
-    }
-);
-
-
-/* =========================================================
-   22. START APPLICATION
-========================================================= */
+   START APP
+   ========================================================= */
 
 loadSongs();

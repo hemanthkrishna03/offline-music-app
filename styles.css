@@ -1,1334 +1,1114 @@
-/* =========================================================
-   GLOBAL
-========================================================= */
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+:root {
+  --bg: #0b0b0d;
+  --surface: #151517;
+  --surface-2: #202023;
+  --text: #f5f5f7;
+  --muted: #a5a5aa;
+  --line: rgba(255,255,255,.09);
+  --accent: #8b5cf6;
+  --danger: #ff6b63;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at 50% 15%,
-            rgba(35, 70, 130, 0.22),
-            transparent 42%
-        ),
-        #030914;
-
-    color: #ffffff;
-
-    font-family: "Segoe UI", sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-
-/* Remove default button styling */
+button,
+input {
+  font: inherit;
+}
 
 button {
-    font-family: inherit;
+  color: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.screen {
+  min-height: 100vh;
 }
 
 
 /* =========================================================
-   HOME SCREEN
-========================================================= */
+   HOME
+   ========================================================= */
 
 .home-screen {
-    min-height: 100vh;
+  padding: 55px 30px 50px;
 
-    padding: 55px 32px 50px;
-
-    background:
-        radial-gradient(
-            circle at 50% 20%,
-            rgba(30, 60, 110, 0.20),
-            transparent 45%
-        ),
-        #030914;
-
-    color: white;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(139,92,246,.12),
+      transparent 35%
+    ),
+    var(--bg);
 }
 
-
-/* =========================================================
-   HOME HEADER
-========================================================= */
-
 .home-header {
-    text-align: center;
-
-    margin-bottom: 70px;
+  text-align: center;
+  margin-bottom: 50px;
 }
 
 .home-header h1 {
-    margin: 0;
-
-    font-family: "Segoe UI", sans-serif;
-
-    font-size: clamp(32px, 5vw, 64px);
-
-    font-weight: 700;
-
-    letter-spacing: -1.5px;
+  margin: 0;
+  font-size: clamp(32px, 5vw, 58px);
+  letter-spacing: -1.8px;
 }
 
-.home-header h1 span {
-    background: linear-gradient(
-        90deg,
-        #b84cff,
-        #8b5cf6,
-        #c084fc
+.home-header span {
+  background:
+    linear-gradient(
+      90deg,
+      #b84cff,
+      #8b5cf6,
+      #c084fc
     );
 
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-
-/* Small line below heading */
-
-.header-line {
-    width: 110px;
-    height: 5px;
-
-    margin: 28px auto 0;
-
-    border-radius: 10px;
-
-    background: linear-gradient(
-        90deg,
-        #b83cff,
-        #4da3ff
-    );
-
-    box-shadow:
-        0 0 12px rgba(168, 85, 247, 0.55);
-}
-
-
-/* =========================================================
-   CATEGORY GRID
-========================================================= */
 
 .category-grid {
-    width: min(100%, 1100px);
+  width: min(100%, 920px);
 
-    margin: 0 auto;
+  margin: auto;
 
-    display: grid;
+  display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+  grid-template-columns:
+    repeat(2, 1fr);
 
-    gap: 30px;
+  gap: 24px;
 }
 
-
-/* =========================================================
-   CATEGORY CARD
-========================================================= */
 
 .category-card {
-    position: relative;
+  padding: 0;
 
-    width: 100%;
+  overflow: hidden;
 
-    padding: 0;
+  border:
+    1px solid
+    var(--line);
 
-    border: 1px solid rgba(80, 120, 190, 0.35);
+  border-radius: 24px;
 
-    border-radius: 28px;
+  background: #111114;
 
-    overflow: hidden;
+  text-align: left;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    background: #08101e;
-
-    color: white;
-
-    text-align: left;
-
-    box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.35);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
+  transition:
+    transform .2s ease,
+    border-color .2s ease;
 }
-
-
-/* Hover */
 
 .category-card:hover {
-    transform: translateY(-6px);
+  transform: translateY(-4px);
 
-    border-color: rgba(160, 100, 255, 0.7);
-
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        0 0 25px rgba(120, 80, 255, 0.15);
+  border-color:
+    rgba(192,132,252,.5);
 }
-
-
-/* Click */
 
 .category-card:active {
-    transform: scale(0.98);
+  transform: scale(.985);
 }
 
 
-/* =========================================================
-   CATEGORY IMAGE
-========================================================= */
-
 .category-image {
-    width: 100%;
+  aspect-ratio: 1 / 1;
 
-    aspect-ratio: 1 / 1;
-
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .category-image img {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    display: block;
+  display: block;
 
-    object-fit: cover;
-
-    transition: transform 0.4s ease;
+  object-fit: cover;
 }
 
-.category-card:hover .category-image img {
-    transform: scale(1.04);
-}
-
-
-/* =========================================================
-   CATEGORY TITLE
-========================================================= */
 
 .category-title {
-    padding: 22px 25px 25px;
+  padding: 17px 20px 20px;
 
-    font-size: clamp(22px, 3vw, 32px);
+  font-size: 25px;
 
-    font-weight: 700;
-
-    letter-spacing: -0.5px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(8, 16, 30, 0.92),
-            #08101e
-        );
+  font-weight: 700;
 }
 
 
 /* =========================================================
-   SONG LIST SCREEN
-========================================================= */
+   ALL SONGS PAGE
+   ========================================================= */
 
-.song-list-screen {
-    min-height: 100vh;
+.list-screen {
 
-    padding: 30px;
+  padding:
+    20px
+    20px
+    120px;
 
-    background: #030914;
-
-    color: white;
+  background: var(--bg);
 }
 
 
-/* Song list heading */
+.list-header {
 
-.song-list-screen h2 {
-    margin: 0 0 25px;
+  width: min(100%, 900px);
 
-    text-align: center;
+  margin:
+    0 auto
+    18px;
 
-    font-size: 30px;
+  display: grid;
 
-    font-weight: 700;
+  grid-template-columns:
+    44px
+    1fr
+    44px;
+
+  align-items: center;
 }
 
 
-/* =========================================================
-   SEARCH
-========================================================= */
+.list-header h2 {
+
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 27px;
+
+  letter-spacing: -.6px;
+}
+
+
+.icon-button {
+
+  width: 44px;
+  height: 44px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 27px;
+}
+
+.icon-button:hover {
+  background:
+    rgba(255,255,255,.07);
+}
+
+
+/* SEARCH */
+
+.search-wrap {
+
+  width: min(100%, 900px);
+
+  margin:
+    0 auto
+    18px;
+
+  position: relative;
+}
+
+
+.search-icon {
+
+  position: absolute;
+
+  left: 16px;
+
+  top: 50%;
+
+  transform:
+    translateY(-52%);
+
+  color: var(--muted);
+
+  font-size: 26px;
+
+  pointer-events: none;
+}
+
 
 #search {
-    display: block;
 
-    width: min(100%, 700px);
+  width: 100%;
 
-    margin: 0 auto 25px;
+  height: 52px;
 
-    padding: 14px 18px;
+  padding:
+    0
+    18px
+    0
+    48px;
 
-    border: 1px solid rgba(100, 130, 180, 0.35);
+  border:
+    1px solid
+    var(--line);
 
-    border-radius: 14px;
+  border-radius: 16px;
 
-    outline: none;
+  outline: none;
 
-    background: #0b1424;
+  background: #18181a;
 
-    color: white;
+  color: var(--text);
 
-    font-size: 16px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+  font-size: 16px;
 }
 
 #search::placeholder {
-    color: rgba(255, 255, 255, 0.45);
+  color: #77777d;
 }
 
 #search:focus {
-    border-color: rgba(150, 100, 255, 0.75);
-
-    box-shadow:
-        0 0 0 3px rgba(150, 100, 255, 0.10);
+  border-color:
+    rgba(139,92,246,.65);
 }
 
 
-/* =========================================================
-   SONG LIST
-========================================================= */
+/* SONG LIST */
 
-#songList {
-    list-style: none;
+.song-list {
 
-    padding: 0;
+  width: min(100%, 900px);
 
-    margin: 0 auto;
-
-    width: min(100%, 1000px);
+  margin: auto;
 }
 
 
-/* Individual song */
+.song-row {
 
-li {
-    display: flex;
+  min-height: 76px;
 
-    align-items: center;
+  display: flex;
 
-    justify-content: space-between;
+  align-items: center;
 
-    gap: 15px;
+  gap: 14px;
 
-    margin: 10px 0;
+  padding:
+    9px
+    4px;
 
-    padding: 14px 16px;
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.055);
 
-    border: 1px solid rgba(80, 120, 180, 0.20);
-
-    border-radius: 15px;
-
-    background: #0a1423;
-
-    color: white;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease,
-        border-color 0.2s ease;
+  cursor: pointer;
 }
 
-li:hover {
-    transform: translateY(-2px);
+.song-row:hover {
+  background:
+    rgba(255,255,255,.035);
+}
 
-    background: #101d31;
-
-    border-color: rgba(140, 100, 240, 0.45);
+.song-row.playing {
+  background:
+    rgba(139,92,246,.10);
 }
 
 
-/* Currently playing song */
+/* COVER */
 
-li.playing,
-.playing {
-    background:
-        linear-gradient(
-            90deg,
-            rgba(125, 60, 220, 0.30),
-            rgba(50, 120, 220, 0.18)
-        ) !important;
+.song-cover {
 
-    border-color: rgba(170, 110, 255, 0.70) !important;
+  width: 58px;
+  height: 58px;
 
-    color: white !important;
+  flex:
+    0 0 58px;
+
+  border-radius: 8px;
+
+  object-fit: cover;
+
+  background: #222;
 }
 
 
-/* =========================================================
-   SONG INFORMATION
-========================================================= */
-
-.song-info {
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    min-width: 0;
-
-    flex: 1;
-}
-
-.song-info img {
-    width: 58px;
-    height: 58px;
-
-    flex-shrink: 0;
-
-    object-fit: cover;
-
-    border-radius: 10px;
-}
+/* SONG DETAILS */
 
 .song-details {
-    min-width: 0;
-}
 
-.song-details .title {
-    display: block;
+  min-width: 0;
 
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
-
-    font-size: 16px;
-
-    font-weight: 600;
-}
-
-.song-details .artist {
-    display: block;
-
-    margin-top: 4px;
-
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
-
-    color: rgba(255, 255, 255, 0.55);
-
-    font-size: 13px;
+  flex: 1;
 }
 
 
-/* =========================================================
-   PLAYER
-========================================================= */
+.song-title {
 
-.player {
-    width: min(100%, 700px);
+  display: block;
 
-    margin: 25px auto;
+  overflow: hidden;
 
-    padding: 28px;
+  white-space: nowrap;
 
-    border: 1px solid rgba(90, 120, 180, 0.25);
+  text-overflow: ellipsis;
 
-    border-radius: 25px;
+  font-size: 19px;
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(20, 31, 50, 0.95),
-            rgba(8, 15, 27, 0.98)
-        );
+  line-height: 1.25;
 
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.45);
-
-    color: white;
+  font-weight: 500;
 }
 
 
-/* =========================================================
-   PLAYER ALBUM COVER
-========================================================= */
+.song-artist {
 
-#albumCover {
-    display: block;
+  display: block;
 
-    width: min(100%, 360px);
+  margin-top: 5px;
 
-    aspect-ratio: 1 / 1;
+  overflow: hidden;
 
-    margin: 0 auto 25px;
+  white-space: nowrap;
 
-    object-fit: cover;
+  text-overflow: ellipsis;
 
-    border-radius: 20px;
+  color: var(--muted);
 
-    box-shadow:
-        0 15px 45px rgba(0, 0, 0, 0.45);
+  font-size: 15px;
 }
 
 
-/* =========================================================
-   PLAYER SONG TITLE
-========================================================= */
+/* THREE DOTS */
 
-#songTitle {
-    margin: 0 0 7px;
+.more-button {
 
-    text-align: center;
+  width: 44px;
+  height: 58px;
 
-    font-size: 24px;
+  flex:
+    0 0 44px;
 
-    font-weight: 700;
+  border: 0;
 
-    color: white;
+  background: transparent;
+
+  border-radius: 12px;
+
+  color: #c4c4c8;
+
+  font-size: 28px;
+
+  cursor: pointer;
+}
+
+.more-button:hover {
+
+  background:
+    rgba(255,255,255,.08);
+
+  color: white;
 }
 
 
-/* =========================================================
-   PLAYER ARTIST
-========================================================= */
-
-#songArtist {
-    margin: 0 0 5px;
-
-    text-align: center;
-
-    color: rgba(255, 255, 255, 0.65);
-
-    font-size: 15px;
-}
-
-
-/* =========================================================
-   RELEASE YEAR
-========================================================= */
-
-#songYear {
-    margin: 0 0 22px;
-
-    text-align: center;
-
-    color: rgba(255, 255, 255, 0.45);
-
-    font-size: 13px;
-}
-
-
-/* =========================================================
-   PROGRESS AREA
-========================================================= */
-
-.progress-container {
-    width: 100%;
-}
-
-
-/* Progress bar */
-
-#progress {
-    display: block;
-
-    width: 100%;
-
-    height: 5px;
-
-    margin: 0;
-
-    appearance: none;
-
-    -webkit-appearance: none;
-
-    border-radius: 10px;
-
-    background: #263348;
-
-    outline: none;
-
-    cursor: pointer;
-}
-
-
-/* Chrome / Edge / Safari */
-
-#progress::-webkit-slider-thumb {
-    appearance: none;
-
-    -webkit-appearance: none;
-
-    width: 15px;
-    height: 15px;
-
-    border-radius: 50%;
-
-    background: #ffffff;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 0 8px rgba(255, 255, 255, 0.35);
-}
-
-
-/* Firefox */
-
-#progress::-moz-range-thumb {
-    width: 15px;
-    height: 15px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: #ffffff;
-
-    cursor: pointer;
-}
-
-
-/* =========================================================
-   TIME DISPLAY
-========================================================= */
-
-.time-display {
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-top: 8px;
-
-    color: rgba(255, 255, 255, 0.55);
-
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   PLAYER CONTROLS
-========================================================= */
-
-.controls {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 14px;
-
-    margin-top: 25px;
-}
-
-
-.controls button {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 48px;
-    height: 48px;
-
-    margin: 0;
-
-    padding: 0;
-
-    border: 1px solid rgba(255, 255, 255, 0.12);
-
-    border-radius: 50%;
-
-    background: #121d2e;
-
-    color: white;
-
-    font-size: 18px;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.controls button:hover {
-    transform: scale(1.08);
-
-    background: #1c2a40;
-}
-
-
-/* Main play button */
-
-.controls .play-button {
-    width: 62px;
-    height: 62px;
-
-    background: white;
-
-    color: #050b14;
-
-    font-size: 23px;
-}
-
-
-.controls .play-button:hover {
-    background: #ffffff;
-
-    transform: scale(1.10);
-}
-
-
-/* =========================================================
-   SECONDARY PLAYER CONTROLS
-========================================================= */
-
-.player-options {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 25px;
-
-    margin-top: 25px;
-}
-
-
-.player-options button {
-    border: none;
-
-    background: transparent;
-
-    color: rgba(255, 255, 255, 0.65);
-
-    cursor: pointer;
-
-    font-size: 16px;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-.player-options button:hover {
-    color: white;
-
-    transform: scale(1.08);
-}
-
-
-/* Active option */
-
-.player-options button.active {
-    color: #b86cff;
-}
-
-
-/* =========================================================
-   QUEUE
-========================================================= */
-
-.queue {
-    width: min(100%, 700px);
-
-    margin: 25px auto;
-
-    padding: 20px;
-
-    border: 1px solid rgba(80, 120, 180, 0.22);
-
-    border-radius: 20px;
-
-    background: #08111f;
-}
-
-
-.queue h3 {
-    margin: 0 0 15px;
-
-    font-size: 18px;
-}
-
-
-.queue-list {
-    list-style: none;
-
-    padding: 0;
-
-    margin: 0;
-}
-
-
-.queue-list li {
-    margin: 6px 0;
-
-    padding: 10px 12px;
-
-    background: #0c1727;
-
-    border-radius: 10px;
-}
-
-
-/* =========================================================
-   PLAY NEXT TOGGLE
-========================================================= */
-
-.play-next {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-top: 15px;
-
-    color: rgba(255, 255, 255, 0.75);
-
-    font-size: 14px;
-}
-
-
-/* Toggle */
-
-.toggle {
-    position: relative;
-
-    width: 46px;
-    height: 25px;
-
-    flex-shrink: 0;
-}
-
-.toggle input {
-    opacity: 0;
-
-    width: 0;
-    height: 0;
-}
-
-.toggle-slider {
-    position: absolute;
-
-    inset: 0;
-
-    border-radius: 30px;
-
-    background: #263348;
-
-    cursor: pointer;
-
-    transition: 0.25s;
-}
-
-.toggle-slider::before {
-    content: "";
-
-    position: absolute;
-
-    width: 19px;
-    height: 19px;
-
-    left: 3px;
-    top: 3px;
-
-    border-radius: 50%;
-
-    background: white;
-
-    transition: 0.25s;
-}
-
-.toggle input:checked + .toggle-slider {
-    background: #8b5cf6;
-}
-
-.toggle input:checked + .toggle-slider::before {
-    transform: translateX(21px);
-}
-
-
-/* =========================================================
-   MORE MENU
-========================================================= */
-
-.more-menu {
-    position: relative;
-
-    display: inline-block;
-}
-
-
-/* =========================================================
-   POPUP MENU
-========================================================= */
-
-.popup-menu {
-    display: none;
-
-    position: absolute;
-
-    right: 0;
-
-    bottom: 55px;
-
-    min-width: 180px;
-
-    padding: 8px;
-
-    border: 1px solid rgba(120, 140, 180, 0.25);
-
-    border-radius: 12px;
-
-    background: #101a29;
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.45);
-
-    z-index: 1000;
-}
-
-
-/* Popup buttons */
-
-.popup-menu button {
-    display: block;
-
-    width: 100%;
-
-    margin: 0;
-
-    padding: 10px 14px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: transparent;
-
-    color: white;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    font-size: 14px;
-}
-
-
-.popup-menu button:hover {
-    background: #1b2940;
-}
-
-
-/* =========================================================
-   GENERAL BUTTON
-========================================================= */
-
-button {
-    border: none;
-
-    outline: none;
-
-    cursor: pointer;
-}
-
-
-/* Don't apply generic green styling anymore */
-
-
-/* =========================================================
-   BACK / HOME BUTTON
-========================================================= */
-
-.back-button {
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 8px;
-
-    padding: 10px 16px;
-
-    border: 1px solid rgba(100, 130, 180, 0.30);
-
-    border-radius: 10px;
-
-    background: #0b1524;
-
-    color: white;
-
-    font-size: 14px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
-}
-
-
-.back-button:hover {
-    background: #152238;
-
-    transform: translateX(-2px);
-}
-
-
-/* =========================================================
-   TOP BUTTON
-========================================================= */
-
-#topButton {
-    display: block;
-
-    position: fixed;
-
-    right: 20px;
-
-    bottom: 20px;
-
-    width: 45px;
-    height: 45px;
-
-    margin: 0;
-
-    padding: 0;
-
-    border: 1px solid rgba(100, 130, 180, 0.35);
-
-    border-radius: 50%;
-
-    background: #101b2c;
-
-    color: white;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-    z-index: 999;
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.35);
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-
-#topButton:hover {
-    transform: translateY(-3px);
-
-    background: #192940;
-}
-
-
-/* =========================================================
-   AUDIO ELEMENT
-========================================================= */
-
-audio {
-    width: 100%;
-
-    margin-top: 15px;
-}
-
-
-/* =========================================================
-   EMPTY STATE
-========================================================= */
+/* EMPTY */
 
 .empty-state {
-    padding: 50px 20px;
 
-    text-align: center;
+  padding: 70px 20px;
 
-    color: rgba(255, 255, 255, 0.45);
+  text-align: center;
 
-    font-size: 15px;
+  color: var(--muted);
 }
 
 
 /* =========================================================
-   LOADING STATE
-========================================================= */
+   MINI PLAYER
+   ========================================================= */
 
-.loading {
-    padding: 40px;
+.mini-player {
 
-    text-align: center;
+  position: fixed;
 
-    color: rgba(255, 255, 255, 0.55);
+  z-index: 50;
+
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+
+  min-height: 70px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 7px 8px 7px 7px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.10);
+
+  border-radius: 18px;
+
+  background:
+    rgba(27,27,29,.96);
+
+  box-shadow:
+    0 18px 50px
+    rgba(0,0,0,.55);
+
+  backdrop-filter: blur(14px);
+}
+
+
+.mini-song {
+
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+.mini-song img {
+
+  width: 54px;
+  height: 54px;
+
+  flex:
+    0 0 54px;
+
+  border-radius: 9px;
+
+  object-fit: cover;
+}
+
+
+.mini-text {
+  min-width: 0;
+}
+
+
+.mini-text strong,
+.mini-text small {
+
+  display: block;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+.mini-text strong {
+  font-size: 15px;
+}
+
+
+.mini-text small {
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+}
+
+
+.mini-action,
+.mini-play {
+
+  width: 42px;
+  height: 42px;
+
+  flex:
+    0 0 42px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  font-size: 20px;
+}
+
+
+.mini-action:hover {
+  background:
+    rgba(255,255,255,.08);
+}
+
+
+.mini-play {
+
+  background: white;
+
+  color: #09090b;
+
+  font-size: 18px;
+}
+
+
+.mini-loop-active {
+  color: #c084fc;
+}
+
+
+/* =========================================================
+   FULL PLAYER
+   ========================================================= */
+
+.player-screen {
+
+  min-height: 100vh;
+
+  padding:
+    20px
+    20px
+    50px;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(139,92,246,.13),
+      transparent 40%
+    ),
+    var(--bg);
+}
+
+
+.player-header {
+
+  width: min(100%, 650px);
+
+  margin:
+    0 auto
+    24px;
+
+  display: grid;
+
+  grid-template-columns:
+    44px
+    1fr
+    44px;
+
+  align-items: center;
+}
+
+
+.player-header h2 {
+
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 20px;
+}
+
+
+.player-card {
+
+  width: min(100%, 520px);
+
+  margin: auto;
+
+  text-align: center;
+}
+
+
+.player-cover {
+
+  width: min(100%, 380px);
+
+  aspect-ratio: 1;
+
+  display: block;
+
+  margin:
+    0 auto
+    25px;
+
+  border-radius: 20px;
+
+  object-fit: cover;
+
+  box-shadow:
+    0 24px 70px
+    rgba(0,0,0,.45);
+}
+
+
+.player-card h1 {
+
+  margin:
+    0
+    0
+    7px;
+
+  font-size: 27px;
+}
+
+
+.player-card p {
+  margin: 0;
+}
+
+
+#songArtist {
+
+  color: var(--muted);
+
+  font-size: 16px;
+}
+
+
+#songYear {
+
+  margin-top: 7px;
+
+  color: #77777d;
+
+  font-size: 14px;
+}
+
+
+.progress-area {
+  margin-top: 28px;
+}
+
+
+#progress {
+
+  width: 100%;
+
+  accent-color: white;
+}
+
+
+.time-display {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+
+.player-controls {
+
+  margin-top: 25px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
+
+.round-control {
+
+  width: 52px;
+  height: 52px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #202024;
+
+  cursor: pointer;
+
+  font-size: 20px;
+}
+
+
+.main-play {
+
+  width: 64px;
+  height: 64px;
+
+  background: white;
+
+  color: #09090b;
+
+  font-size: 22px;
+}
+
+
+.player-secondary {
+
+  margin-top: 22px;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 32px;
+}
+
+
+.player-secondary button {
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(--muted);
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+
+.player-secondary button.active {
+  color: #c084fc;
+}
+
+
+/* =========================================================
+   DRAWERS
+   ========================================================= */
+
+.drawer {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 70;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  background:
+    rgba(0,0,0,.62);
+}
+
+
+.drawer-card {
+
+  width: 100%;
+
+  max-height: 75vh;
+
+  overflow: auto;
+
+  padding: 18px;
+
+  border-radius:
+    22px
+    22px
+    0
+    0;
+
+  background: #151517;
+}
+
+
+.drawer-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+
+.drawer-header h3 {
+
+  margin: 0;
+
+  font-size: 21px;
+}
+
+
+.queue-item,
+.playlist-item {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 4px;
+
+  border: 0;
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+.queue-item img {
+
+  width: 46px;
+  height: 46px;
+
+  border-radius: 7px;
+
+  object-fit: cover;
+}
+
+
+.queue-item strong,
+.queue-item small {
+  display: block;
+}
+
+
+.queue-item small {
+
+  margin-top: 4px;
+
+  color: var(--muted);
+}
+
+
+.playlist-item {
+
+  padding:
+    17px
+    8px;
+
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   MORE OPTIONS
+   ========================================================= */
+
+.context-menu {
+
+  position: fixed;
+
+  z-index: 100;
+
+  width:
+    min(
+      280px,
+      calc(100vw - 28px)
+    );
+
+  padding: 7px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.12);
+
+  border-radius: 16px;
+
+  background: #202023;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,.55);
+}
+
+
+.context-menu button {
+
+  width: 100%;
+
+  padding:
+    12px
+    13px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+
+.context-menu button:hover {
+
+  background:
+    rgba(255,255,255,.08);
+}
+
+
+.context-menu .danger {
+  color: #ff8b85;
 }
 
 
 /* =========================================================
    MOBILE
-========================================================= */
+   ========================================================= */
 
 @media (max-width: 650px) {
 
-    /* Home */
+  .home-screen {
+    padding:
+      34px
+      15px
+      30px;
+  }
 
-    .home-screen {
-        padding: 35px 16px 30px;
-    }
+  .home-header {
+    margin-bottom: 34px;
+  }
 
+  .home-header h1 {
+    font-size: 33px;
+  }
 
-    .home-header {
-        margin-bottom: 40px;
-    }
+  .category-grid {
+    gap: 13px;
+  }
 
+  .category-card {
+    border-radius: 18px;
+  }
 
-    .home-header h1 {
-        font-size: 34px;
-    }
+  .category-title {
 
+    padding:
+      12px
+      13px
+      15px;
 
-    .header-line {
-        width: 75px;
+    font-size: 17px;
+  }
 
-        height: 4px;
+  .list-screen {
 
-        margin-top: 18px;
-    }
+    padding:
+      14px
+      13px
+      110px;
+  }
 
+  .list-header h2 {
+    font-size: 24px;
+  }
 
-    /* Two-column home layout */
+  .song-row {
 
-    .category-grid {
-        gap: 14px;
-    }
+    min-height: 70px;
 
+    gap: 11px;
+  }
 
-    .category-card {
-        border-radius: 18px;
-    }
+  .song-cover {
 
+    width: 54px;
+    height: 54px;
 
-    .category-title {
-        padding: 13px 14px 16px;
+    flex-basis: 54px;
+  }
 
-        font-size: 18px;
-    }
+  .song-title {
+    font-size: 16px;
+  }
 
+  .song-artist {
+    font-size: 13px;
+  }
 
-    /* Song list */
+  .mini-player {
 
-    .song-list-screen {
-        padding: 20px 15px 30px;
-    }
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
 
+  .mini-action {
+    display: none;
+  }
 
-    .song-list-screen h2 {
-        font-size: 25px;
-    }
+  .mini-play {
 
+    width: 44px;
+    height: 44px;
 
-    /* Song cards */
+    flex-basis: 44px;
+  }
 
-    li {
-        padding: 10px;
-
-        border-radius: 12px;
-    }
-
-
-    .song-info img {
-        width: 48px;
-        height: 48px;
-    }
-
-
-    .song-details .title {
-        font-size: 14px;
-    }
-
-
-    .song-details .artist {
-        font-size: 12px;
-    }
-
-
-    /* Player */
-
-    .player {
-        margin: 15px auto;
-
-        padding: 20px;
-
-        border-radius: 20px;
-    }
-
-
-    #albumCover {
-        width: min(100%, 300px);
-
-        border-radius: 16px;
-    }
-
-
-    #songTitle {
-        font-size: 20px;
-    }
-
-
-    .controls {
-        gap: 10px;
-    }
-
-
-    .controls button {
-        width: 43px;
-        height: 43px;
-
-        font-size: 16px;
-    }
-
-
-    .controls .play-button {
-        width: 56px;
-        height: 56px;
-
-        font-size: 21px;
-    }
-
-
-    .player-options {
-        gap: 18px;
-    }
-}
-
-
-/* =========================================================
-   VERY SMALL PHONES
-========================================================= */
-
-@media (max-width: 400px) {
-
-    .home-screen {
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
-
-    .category-grid {
-        gap: 10px;
-    }
-
-
-    .category-card {
-        border-radius: 15px;
-    }
-
-
-    .category-title {
-        padding: 10px 10px 12px;
-
-        font-size: 15px;
-    }
-
-
-    .home-header h1 {
-        font-size: 29px;
-    }
-
-
-    .header-line {
-        width: 65px;
-    }
-
-
-    .player {
-        padding: 15px;
-    }
-
-
-    .controls {
-        gap: 7px;
-    }
-
-
-    .controls button {
-        width: 40px;
-        height: 40px;
-    }
-
-
-    .controls .play-button {
-        width: 52px;
-        height: 52px;
-    }
-}
-
-
-/* =========================================================
-   LANDSCAPE PHONES
-========================================================= */
-
-@media (max-height: 500px) and (orientation: landscape) {
-
-    .home-screen {
-        padding-top: 25px;
-    }
-
-
-    .home-header {
-        margin-bottom: 25px;
-    }
-
-
-    .home-header h1 {
-        font-size: 30px;
-    }
-
-
-    .category-grid {
-        gap: 15px;
-    }
-
-
-    .player {
-        max-width: 550px;
-    }
-
-
-    #albumCover {
-        width: 220px;
-    }
+  .player-cover {
+    border-radius: 16px;
+  }
 }

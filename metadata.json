@@ -513,7 +513,7 @@
         "year": "2007",
         "track": "3",
         "file": "/music/Andala_Aakashaman.mp3",
-        "cover": "/covers/Andala_Aakashaman.jpg"
+        "cover": "/covers/Andala_Aakashaman.avif"
     },
     {
         "title": "Anjanadri Theme :: SenSongsMp3.Com",
@@ -537,7 +537,7 @@
         "year": "1993",
         "track": "2",
         "file": "/music/Anjanee_Puthruda.mp3",
-        "cover": "/covers/Anjanee_Puthruda.png"
+        "cover": "/covers/anjani putruda.jpg"
     },
     {
         "title": "Anjaneyudu Neevadu(SenSongsMp3.Com)",
@@ -1221,7 +1221,7 @@
         "year": "2005",
         "track": "4",
         "file": "/music/Chandrullo_Unde.mp3",
-        "cover": "/covers/Chandrullo_Unde.jpg"
+        "cover": "/covers/Chandrullo_Unde.webp"
     },
     {
         "title": "Changu Bhala :: SenSongsMp3.Co",
@@ -1473,7 +1473,7 @@
         "year": "1999",
         "track": "2",
         "file": "/music/Chuttu_Chutti.mp3",
-        "cover": "/covers/Chuttu_Chutti.png"
+        "cover": "/covers/Chuttu_Chutti.jpg"
     },
     {
         "title": "Chuttu Janam :: SenSongsMp3.Co",
@@ -2025,7 +2025,7 @@
         "year": "1993",
         "track": "1",
         "file": "/music/Ee_Petaku_Nene.mp3",
-        "cover": "/covers/Ee_Petaku_Nene.png"
+        "cover": "/covers/Ee petaku.jpg"
     },
     {
         "title": "Emaindo Emo",
@@ -2421,7 +2421,7 @@
         "year": "1998",
         "track": "4",
         "file": "/music/Hai_Ra_Hai_Rabba.mp3",
-        "cover": "/covers/Hai_Ra_Hai_Rabba.png"
+        "cover": "/covers/Hai_Ra_Hai_Rabba.jpg"
     },
     {
         "title": "Hanuman Chalisa :: SenSongsMp3.Com",
@@ -2589,7 +2589,7 @@
         "year": "1997",
         "track": "8",
         "file": "/music/Hrudayamane.mp3",
-        "cover": "/covers/Hrudayamane.png"
+        "cover": "/covers/Hrudayamane.jpg"
     },
     {
         "title": "Hukum :: SenSongsMp3.Com",
@@ -2793,7 +2793,7 @@
         "year": "1991",
         "track": "2",
         "file": "/music/jaamu_rathiri.mp3",
-        "cover": "/covers/jaamu_rathiri.png"
+        "cover": "/covers/jaamu_rathiri.jpg"
     },
     {
         "title": "Jagadhananda Karaka",
@@ -2925,7 +2925,7 @@
         "year": "1999",
         "track": "5",
         "file": "/music/Jeevitamante_Poraat.mp3",
-        "cover": "/covers/Jeevitamante_Poraat.png"
+        "cover": "/covers/Jeevitamante_Poraat.jpg"
     },
     {
         "title": "Jhum Jhummandhi Le",
@@ -3093,7 +3093,7 @@
         "year": "1995",
         "track": "0",
         "file": "/music/Kadile_Kalama.mp3",
-        "cover": "/covers/Kadile_Kalama.png"
+        "cover": "/covers/Kadile_Kalama.jpg"
     },
     {
         "title": "Kajalu Chelliva-SenSongsMp3.Co",
@@ -3201,7 +3201,7 @@
         "year": "1999",
         "track": "6",
         "file": "/music/kannula_logililo.mp3",
-        "cover": "/covers/kannula_logililo.png"
+        "cover": "/covers/kannula_logililo.jpg"
     },
     {
         "title": "Kanureppala Kaalam :: SenSongsMp3.Co",
@@ -3717,7 +3717,7 @@
         "year": "1986",
         "track": "5",
         "file": "/music/Malli_Malli.mp3",
-        "cover": "/covers/Malli_Malli.png"
+        "cover": "/covers/Malli_Malli.jpg"
     },
     {
         "title": "Mama Ek Peg La  - SenSongsMp3.Co",
@@ -4317,7 +4317,7 @@
         "year": "1999",
         "track": "1",
         "file": "/music/Narasimha.mp3",
-        "cover": "/covers/Narasimha.png"
+        "cover": "/covers/Narasimha.jpg"
     },
     {
         "title": "Nath Nath-SenSongsMp3.Com",
@@ -4365,7 +4365,7 @@
         "year": "1997",
         "track": "1",
         "file": "/music/Nava_Manmadhuda.mp3",
-        "cover": "/covers/Nava_Manmadhuda.png"
+        "cover": "/covers/Nava_Manmadhuda.jpg"
     },
     {
         "title": "Na Roja Nuvve :: SenSongsMp3.Com",
@@ -6645,7 +6645,7 @@
         "year": "1991",
         "track": "6",
         "file": "/music/Srirasthu_Subham.mp3",
-        "cover": "/covers/Srirasthu_Subham.png"
+        "cover": "/covers/Srirasthu_Subham.jpg"
     },
     {
         "title": "Sri Ramadootha Stotram :: SenSongsMp3.Com",
@@ -6669,7 +6669,7 @@
         "year": "1990",
         "track": "2",
         "file": "/music/Subhalekha.mp3",
-        "cover": "/covers/Subhalekha.png"
+        "cover": "/covers/Subhalekha.jpg"
     },
     {
         "title": "Subhalekha Rasukunna-SenSongsMp3.Com",
@@ -7437,7 +7437,7 @@
         "year": "1963",
         "track": "16",
         "file": "/music/Vinudu_Vinudu.mp3",
-        "cover": "/covers/Vinudu_Vinudu.png"
+        "cover": "/covers/Vinudu Vinudu.jpg"
     },
     {
         "title": "Vunnadhi Okate Zindagi :: SenSongsMp3.Co",

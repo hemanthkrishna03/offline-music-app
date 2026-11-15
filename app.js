@@ -2901,6 +2901,7 @@ function closeQueue() {
 }
 
 
+
 /* =========================================================
    PLAY SONG
    ========================================================= */
@@ -2912,6 +2913,12 @@ function playSong(
 
   if (!song)
     return;
+
+
+  // Check whether the clicked song is already selected
+  const isSameSong =
+    currentSong &&
+    getSongId(currentSong) === getSongId(song);
 
 
   currentSong =
@@ -2941,6 +2948,45 @@ function playSong(
     currentIndex = 0;
 
 
+  // If the same song is clicked again, toggle pause/resume
+  if (isSameSong) {
+
+    if (!audio.paused) {
+
+      // Currently playing → Pause
+      audio.pause();
+
+    } else {
+
+      // Currently paused → Resume
+      if (audio.ended) {
+        audio.currentTime = 0;
+      }
+
+      audio.play()
+        .catch(
+          error =>
+            console.warn(
+              "Playback was not started automatically:",
+              error
+            )
+        );
+    }
+
+
+    updatePlayer(song);
+
+    updateMiniPlayer();
+
+    highlightCurrentSong();
+
+    renderQueue();
+
+    return;
+  }
+
+
+  // Different song → Start from the beginning
   const file =
     fileOf(song);
 
@@ -3373,6 +3419,762 @@ function updateDuration() {
 }
 
 
+
+/* =========================================================
+   VOICE SEARCH + AUTOMATIC PLAYBACK
+   ========================================================= */
+
+let voiceRecognition = null;
+let isVoiceSearching = false;
+
+
+/* CREATE MICROPHONE BUTTON */
+
+const voiceSearchButton =
+  document.createElement("button");
+
+voiceSearchButton.id =
+  "voiceSearchButton";
+
+voiceSearchButton.type =
+  "button";
+
+voiceSearchButton.textContent =
+  "🎙";
+
+voiceSearchButton.title =
+  "Search songs using your voice";
+
+voiceSearchButton.setAttribute(
+  "aria-label",
+  "Search songs using your voice"
+);
+
+voiceSearchButton.style.cssText = `
+  flex: 0 0 46px;
+  width:46px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:#e53935;
+  color:white;
+  font-size:21px;
+  cursor:pointer;
+`;
+
+
+/* VOICE SEARCH STATUS */
+
+const voiceSearchStatus =
+  document.createElement("div");
+
+voiceSearchStatus.id =
+  "voiceSearchStatus";
+
+voiceSearchStatus.style.cssText = `
+  display:none;
+  width:100%;
+  margin-top:8px;
+  font-size:13px;
+  color:#999;
+  text-align:left;
+`;
+
+
+/* CREATE SEARCH ROW */
+
+const voiceSearchRow =
+  document.createElement("div");
+
+voiceSearchRow.style.cssText = `
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+`;
+
+
+/*
+   Put the existing search input and
+   microphone button inside one row.
+*/
+
+searchInput.parentNode.insertBefore(
+  voiceSearchRow,
+  searchInput
+);
+
+voiceSearchRow.appendChild(
+  searchInput
+);
+
+voiceSearchRow.appendChild(
+  voiceSearchButton
+);
+
+searchInput.style.flex =
+  "1 1 auto";
+
+searchInput.style.minWidth =
+  "0";
+
+searchInput.style.boxSizing =
+  "border-box";
+
+searchWrap.appendChild(
+  voiceSearchStatus
+);
+
+
+/* NORMALIZE VOICE TEXT */
+
+function normalizeVoiceText(value) {
+
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+/* CONVERT METADATA VALUES TO TEXT */
+
+function voiceMetadataText(value) {
+
+  if (Array.isArray(value)) {
+
+    return value
+      .map(voiceMetadataText)
+      .join(" ");
+  }
+
+  if (
+    value &&
+    typeof value === "object"
+  ) {
+
+    return Object.values(value)
+      .map(voiceMetadataText)
+      .join(" ");
+  }
+
+  return String(value || "");
+}
+
+
+
+/* =========================================================
+   IMPROVED VOICE MATCHING
+   Handles accent differences and wrong spellings
+   ========================================================= */
+
+
+/* LEVENSHTEIN DISTANCE */
+
+function voiceEditDistance(a, b) {
+
+  const matrix = Array.from(
+    { length: a.length + 1 },
+    () => []
+  );
+
+  for (let i = 0; i <= a.length; i++)
+    matrix[i][0] = i;
+
+  for (let j = 0; j <= b.length; j++)
+    matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+
+    for (let j = 1; j <= b.length; j++) {
+
+      const cost =
+        a[i - 1] === b[j - 1] ? 0 : 1;
+
+      matrix[i][j] = Math.min(
+
+        matrix[i - 1][j] + 1,
+
+        matrix[i][j - 1] + 1,
+
+        matrix[i - 1][j - 1] + cost
+
+      );
+    }
+  }
+
+  return matrix[a.length][b.length];
+}
+
+
+/* WORD SIMILARITY */
+
+function voiceWordSimilarity(a, b) {
+
+  if (a === b)
+    return 1;
+
+  if (!a || !b)
+    return 0;
+
+  const distance =
+    voiceEditDistance(a, b);
+
+  return 1 -
+    distance / Math.max(a.length, b.length);
+}
+
+
+/* CLEAN SONG METADATA */
+
+function cleanVoiceCandidate(value) {
+
+  return normalizeVoiceText(
+    String(value || "")
+      .split("::")[0]
+      .replace(/\([^)]*\d{4}[^)]*\)/g, "")
+      .replace(/sen\s*songs?\s*mp3/gi, "")
+      .replace(/www/gi, "")
+  );
+}
+
+
+/* SCORE A SONG FIELD */
+
+function scoreVoiceField(query, candidate) {
+
+  const cleanCandidate =
+    cleanVoiceCandidate(candidate);
+
+  if (!query || !cleanCandidate)
+    return 0;
+
+  if (query === cleanCandidate)
+    return 100;
+
+  if (cleanCandidate.includes(query))
+    return 95;
+
+  const queryWords =
+    query.split(" ").filter(Boolean);
+
+  const candidateWords =
+    cleanCandidate.split(" ").filter(Boolean);
+
+  if (!queryWords.length || !candidateWords.length)
+    return 0;
+
+
+  /*
+     Compare every spoken word with the
+     closest word in the song metadata.
+  */
+
+  let totalSimilarity = 0;
+
+  for (const queryWord of queryWords) {
+
+    let bestSimilarity = 0;
+
+    for (const candidateWord of candidateWords) {
+
+      const similarity =
+        voiceWordSimilarity(
+          queryWord,
+          candidateWord
+        );
+
+      bestSimilarity =
+        Math.max(
+          bestSimilarity,
+          similarity
+        );
+    }
+
+    totalSimilarity += bestSimilarity;
+  }
+
+
+  const averageSimilarity =
+    totalSimilarity / queryWords.length;
+
+  return Math.round(
+    averageSimilarity * 100
+  );
+}
+
+
+/* FIND MATCHING SONGS */
+
+function findVoiceSongs(spokenText) {
+
+  let query =
+    normalizeVoiceText(spokenText);
+
+
+  /* REMOVE VOICE COMMAND WORDS */
+
+  query = query.replace(
+    /^(please\s+)?(can you\s+)?(play|find|search for|look for|listen to|put on|i want to hear)\s+/i,
+    ""
+  );
+
+
+  query = query.replace(
+    /^(the\s+)?song\s+/i,
+    ""
+  );
+
+
+  let searchMode = "all";
+
+
+  if (/^songs?\s+by\s+/i.test(query)) {
+
+    searchMode = "artist";
+
+    query = query.replace(
+      /^songs?\s+by\s+/i,
+      ""
+    );
+
+  } else if (/^songs?\s+from\s+/i.test(query)) {
+
+    searchMode = "album";
+
+    query = query.replace(
+      /^songs?\s+from\s+/i,
+      ""
+    );
+
+  } else if (/^songs?\s+(of|for)\s+/i.test(query)) {
+
+    searchMode = "hero";
+
+    query = query.replace(
+      /^songs?\s+(of|for)\s+/i,
+      ""
+    );
+  }
+
+
+  query = query.replace(
+    /\s+(songs?|music)$/i,
+    ""
+  ).trim();
+
+
+  if (!query)
+    return [];
+
+
+  const results = songs.map(song => {
+
+    const fields = {
+
+      title:
+        cleanVoiceCandidate(
+          titleOf(song)
+        ),
+
+      artist:
+        cleanVoiceCandidate(
+          artistOf(song)
+        ),
+
+      album:
+        cleanVoiceCandidate(
+          song.album
+        ),
+
+      albumArtist:
+        cleanVoiceCandidate(
+          song.albumArtist
+        ),
+
+      composer:
+        cleanVoiceCandidate(
+          song.composer
+        )
+    };
+
+
+    let candidates = [];
+
+
+    if (searchMode === "artist") {
+
+      candidates = [
+        fields.artist
+      ];
+
+    } else if (searchMode === "album") {
+
+      candidates = [
+        fields.album
+      ];
+
+    } else if (searchMode === "hero") {
+
+      candidates = [
+        fields.albumArtist
+      ];
+
+    } else {
+
+      candidates = [
+        fields.title,
+        fields.album,
+        fields.artist,
+        fields.albumArtist,
+        fields.composer
+      ];
+    }
+
+
+    const score = Math.max(
+      ...candidates.map(candidate =>
+        scoreVoiceField(
+          query,
+          candidate
+        )
+      )
+    );
+
+
+    return {
+      song,
+      score
+    };
+
+  });
+
+
+  return results
+
+    /*
+       Avoid unrelated songs being selected.
+    */
+
+    .filter(item => item.score >= 70)
+
+    .sort((a, b) => b.score - a.score)
+
+    .map(item => item.song);
+}
+
+
+/* PROCESS VOICE COMMAND */
+
+function handleVoiceCommand(spokenText) {
+
+  const command =
+    normalizeVoiceText(spokenText);
+
+
+  if (!command)
+    return;
+
+
+  /* NEXT SONG */
+
+  if (
+    /^(next|next song|skip|skip song)$/.test(command)
+  ) {
+
+    playNext();
+
+    voiceSearchStatus.textContent =
+      "Playing next song.";
+
+    return;
+  }
+
+
+  /* PREVIOUS SONG */
+
+  if (
+    /^(previous|previous song|last song)$/.test(command)
+  ) {
+
+    playPrevious();
+
+    voiceSearchStatus.textContent =
+      "Playing previous song.";
+
+    return;
+  }
+
+
+  /* PAUSE */
+
+  if (
+    /^(pause|pause music|pause song|stop music)$/.test(command)
+  ) {
+
+    audio.pause();
+
+    voiceSearchStatus.textContent =
+      "Music paused.";
+
+    return;
+  }
+
+
+  /* RESUME */
+
+  if (
+    /^(resume|continue|play music)$/.test(command)
+  ) {
+
+    if (currentSong) {
+
+      audio.play().catch(error =>
+        console.warn(error)
+      );
+
+    } else if (songs.length) {
+
+      playSong(
+        songs[0],
+        songs
+      );
+    }
+
+    voiceSearchStatus.textContent =
+      "Resuming music.";
+
+    return;
+  }
+
+
+  /* SEARCH SONGS */
+
+  const matchingSongs =
+    findVoiceSongs(spokenText);
+
+
+  if (!matchingSongs.length) {
+
+    voiceSearchStatus.textContent =
+      `No matching song found for "${spokenText}".`;
+
+    return;
+  }
+
+
+  const selectedSong =
+    matchingSongs[0];
+
+
+  /*
+     Display matching songs.
+     Then automatically play the best match.
+  */
+
+  searchInput.value = "";
+
+  showList(
+    "Voice Search Results",
+    matchingSongs,
+    null
+  );
+
+  playSong(
+    selectedSong,
+    matchingSongs
+  );
+
+
+  voiceSearchStatus.textContent =
+    `Playing: ${titleOf(selectedSong)}`;
+}
+
+
+/* START VOICE RECOGNITION */
+
+function startVoiceSearch() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+
+  if (!SpeechRecognition) {
+
+    voiceSearchStatus.style.display =
+      "block";
+
+    voiceSearchStatus.textContent =
+      "Voice search is not supported in this browser.";
+
+    return;
+  }
+
+
+  if (isVoiceSearching)
+    return;
+
+
+  voiceRecognition =
+    new SpeechRecognition();
+
+
+  voiceRecognition.lang =
+    "en-IN";
+
+  voiceRecognition.continuous =
+    false;
+
+  voiceRecognition.interimResults =
+    false;
+
+  voiceRecognition.maxAlternatives =
+    5;
+
+
+  voiceRecognition.onstart = () => {
+
+    isVoiceSearching = true;
+
+    voiceSearchStatus.style.display =
+      "block";
+
+    voiceSearchStatus.textContent =
+      "Listening... Speak a song name, singer, movie or hero.";
+
+    voiceSearchButton.textContent =
+      "🔴";
+
+    voiceSearchButton.style.background =
+      "#b71c1c";
+  };
+
+
+  
+voiceRecognition.onresult = event => {
+
+  const alternatives =
+    Array.from(event.results[0])
+      .map(result =>
+        result.transcript.trim()
+      );
+
+
+  console.log(
+    "Voice Recognition Alternatives:",
+    alternatives
+  );
+
+
+  /*
+     Try each recognized alternative.
+     Use the first one that matches your library.
+  */
+
+  let selectedText =
+    alternatives[0];
+
+  for (const alternative of alternatives) {
+
+    if (
+      findVoiceSongs(alternative).length > 0
+    ) {
+
+      selectedText = alternative;
+
+      break;
+    }
+  }
+
+
+  voiceSearchStatus.textContent =
+    `Heard: "${selectedText}"`;
+
+
+  handleVoiceCommand(
+    selectedText
+  );
+};
+
+
+
+  voiceRecognition.onerror = event => {
+
+    console.error(
+      "Voice recognition error:",
+      event.error
+    );
+
+
+    const messages = {
+
+      "not-allowed":
+        "Microphone permission denied. Please allow microphone access.",
+
+      "no-speech":
+        "No voice detected. Please try again.",
+
+      "network":
+        "Voice recognition network error. Please check your internet connection.",
+
+      "audio-capture":
+        "Microphone not found."
+    };
+
+
+    voiceSearchStatus.style.display =
+      "block";
+
+    voiceSearchStatus.textContent =
+      messages[event.error] ||
+      `Voice recognition error: ${event.error}`;
+  };
+
+
+  voiceRecognition.onend = () => {
+
+    isVoiceSearching = false;
+
+    voiceSearchButton.textContent =
+      "🎙";
+
+    voiceSearchButton.style.background =
+      "#e53935";
+  };
+
+
+  try {
+
+    voiceRecognition.start();
+
+  } catch (error) {
+
+    isVoiceSearching = false;
+
+    voiceSearchStatus.style.display =
+      "block";
+
+    voiceSearchStatus.textContent =
+      "Unable to start voice search. Please try again.";
+
+    console.error(error);
+  }
+}
+
+
+/* MICROPHONE BUTTON EVENT */
+
+voiceSearchButton.addEventListener(
+  "click",
+  startVoiceSearch
+);
+
+
+
 /* =========================================================
    SEARCH
    ========================================================= */
@@ -3387,14 +4189,6 @@ searchInput.addEventListener(
         .toLowerCase();
 
 
-    /*
-       In normal lists, search only within
-       the current visible list.
-
-       In playlist selection mode,
-       search all songs.
-    */
-
     const source =
       playlistSelectionMode
         ? songs
@@ -3405,25 +4199,58 @@ searchInput.addEventListener(
       source.filter(song => {
 
         const title =
-          titleOf(song)
-            .toLowerCase();
+          titleOf(song).toLowerCase();
 
 
         const artist =
-          artistOf(song)
-            .toLowerCase();
+          artistOf(song).toLowerCase();
 
 
         const album =
-          String(
-            song.album || ""
+          voiceMetadataText(
+            song.album
+          ).toLowerCase();
+
+
+        const albumArtist =
+          voiceMetadataText(
+            song.albumArtist
+          ).toLowerCase();
+
+
+        const heroes =
+          voiceMetadataText(
+            song.heroes ||
+            song.Heroes ||
+            song.hero ||
+            song.Hero
+          ).toLowerCase();
+
+
+        const heroine =
+          voiceMetadataText(
+            song.heroines ||
+            song.Heroines ||
+            song.heroine ||
+            song.Heroine
+          ).toLowerCase();
+
+
+        const composer =
+          voiceMetadataText(
+            song.composer ||
+            song.Composer
           ).toLowerCase();
 
 
         return (
           title.includes(q) ||
           artist.includes(q) ||
-          album.includes(q)
+          album.includes(q) ||
+          albumArtist.includes(q) ||
+          heroes.includes(q) ||
+          heroine.includes(q) ||
+          composer.includes(q)
         );
       });
 

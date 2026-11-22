@@ -55,6 +55,7 @@ let playlistSelectionMode = false;
    - Renamed playlists stay renamed.
    ========================================================= */
 
+
 const DEFAULT_PLAYLISTS = [
   {
     id: "playlist-1",
@@ -91,10 +92,35 @@ const DEFAULT_PLAYLISTS = [
     name: "Special Songs",
     songs: []
   },
-  { 
-    id: "playlist-8", 
-    name: "Heroine Songs", 
-    songs: [] 
+  {
+    id: "playlist-8",
+    name: "Heroine Songs",
+    songs: []
+  },
+  {
+    id: "playlist-9",
+    name: "Title Songs",
+    songs: []
+  },
+  {
+    id: "playlist-10",
+    name: "Family Songs",
+    songs: []
+  },
+  {
+    id: "playlist-11",
+    name: "Friendship Songs",
+    songs: []
+  },
+  {
+    id: "playlist-12",
+    name: "Hindi Songs",
+    songs: []
+  },
+  {
+    id: "playlist-13",
+    name: "Inspirational Songs",
+    songs: []
   }
 ];
 
@@ -4703,6 +4729,94 @@ document.addEventListener(
     }
   }
 );
+
+
+/* =========================================================
+   MOBILE BACK BUTTON NAVIGATION
+   ========================================================= */
+
+// Create an initial browser history entry for the app
+history.pushState(
+  { musicApp: true },
+  "",
+  location.href
+);
+
+window.addEventListener("popstate", () => {
+
+  // 1. Close context menu first
+  if (!contextMenu.classList.contains("hidden")) {
+    closeContextMenu();
+
+    history.pushState(
+      { musicApp: true },
+      "",
+      location.href
+    );
+
+    return;
+  }
+
+  // 2. Close queue panel first
+  if (!queuePanel.classList.contains("hidden")) {
+    closeQueue();
+
+    history.pushState(
+      { musicApp: true },
+      "",
+      location.href
+    );
+
+    return;
+  }
+
+  // 3. Close full player and return to previous app screen
+  if (!playerScreen.classList.contains("hidden")) {
+    closeFullPlayer();
+
+    history.pushState(
+      { musicApp: true },
+      "",
+      location.href
+    );
+
+    return;
+  }
+
+  // 4. If inside a playlist, return to Playlists page
+  if (currentPlaylistId) {
+    showPlaylistsPage();
+
+    history.pushState(
+      { musicApp: true },
+      "",
+      location.href
+    );
+
+    return;
+  }
+
+  // 5. If inside any other list, return to Home
+  if (currentScreen === "list") {
+    showHome();
+
+    history.pushState(
+      { musicApp: true },
+      "",
+      location.href
+    );
+
+    return;
+  }
+
+  // 6. If already on Home, keep the app open
+  history.pushState(
+    { musicApp: true },
+    "",
+    location.href
+  );
+
+});
 
 
 /* =========================================================

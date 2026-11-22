@@ -650,7 +650,7 @@ window.songs = [
   { title: "ANIMAL Abrar s Entry", file: "songs/ANIMAL_Abrar_s_Entry.mp3" },
   { title: "Animal Arjan Vailly", file: "songs/Animal_Arjan_Vailly.mp3" },
   { title: "Balu Gani lntilona", file: "songs/Balu_Gani_lntilona.mp3" },
-  { title: "Dandiya AtaIu Ada", file: "songs/Dandiya_AtaIu_Ada.mp3" },
+  { title: "Dandiya Atalu Ada", file: "songs/Dandiya_Atalu_Ada.mp3" },
   { title: "Dangal", file: "songs/Dangal.mp3" },
   { title: "Digu Digu Digu Naaga", file: "songs/Digu_Digu_Digu_Naaga.mp3" },
   { title: "Eeswaran", file: "songs/Eeswaran.mp3" },

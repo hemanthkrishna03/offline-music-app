@@ -655,7 +655,7 @@ window.songs = [
   { title: "Digu Digu Digu Naaga", file: "songs/Digu_Digu_Digu_Naaga.mp3" },
   { title: "Eeswaran", file: "songs/Eeswaran.mp3" },
   { title: "Endhayya Saami", file: "songs/Endhayya_Saami.mp3" },
-  { title: "llayaraja Hit Telugu", file: "songs/llayaraja_Hit_Telugu.mp3" },
+  { title: "prema yatralaku mohanbabu.mp3", file: "songs/prema_yatralaku_mohanbabu.mp3" },
   { title: "Kallajodu College Papa Telugu", file: "songs/Kallajodu_College_Papa_Telugu.mp3" },
   { title: "Kanchana", file: "songs/Kanchana.mp3" },
   { title: "Laddu Gaani Pelli", file: "songs/Laddu_Gaani_Pelli.mp3" },

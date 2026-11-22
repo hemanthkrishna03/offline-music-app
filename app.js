@@ -10,6 +10,7 @@
 
 let songs = [];
 let visibleSongs = [];
+let savedSongListScrollPosition = 0;
 
 let queue = [];
 
@@ -3064,6 +3065,8 @@ function playSong(
   highlightCurrentSong();
 
   renderQueue();
+
+  openFullPlayer();
 }
 
 
@@ -3159,55 +3162,42 @@ function openFullPlayer() {
   if (!currentSong)
     return;
 
+  // Save the current song-list scroll position
+  if (currentScreen === "list") {
+    savedSongListScrollPosition = window.scrollY;
+  }
 
-  playerScreen.classList.remove(
-    "hidden"
-  );
+  playerScreen.classList.remove("hidden");
 
-  homeScreen.classList.add(
-    "hidden"
-  );
+  homeScreen.classList.add("hidden");
+  songListScreen.classList.add("hidden");
+  miniPlayer.classList.add("hidden");
 
-  songListScreen.classList.add(
-    "hidden"
-  );
-
-  miniPlayer.classList.add(
-    "hidden"
-  );
-
-
-  updatePlayer(
-    currentSong
-  );
+  updatePlayer(currentSong);
 }
-
 
 function closeFullPlayer() {
 
-  playerScreen.classList.add(
-    "hidden"
-  );
+  playerScreen.classList.add("hidden");
 
-
-  if (
-    currentScreen ===
-    "home"
-  ) {
+  if (currentScreen === "home") {
 
     showHome();
 
   } else {
 
-    homeScreen.classList.add(
-      "hidden"
-    );
-
-    songListScreen.classList.remove(
-      "hidden"
-    );
+    homeScreen.classList.add("hidden");
+    songListScreen.classList.remove("hidden");
 
     updateMiniPlayer();
+
+    // Restore the previous song-list position
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: savedSongListScrollPosition,
+        behavior: "instant"
+      });
+    });
   }
 }
 

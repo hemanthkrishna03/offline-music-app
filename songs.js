@@ -686,6 +686,7 @@ window.songs = [
   { title: "Nammaku Adallaloni Premalani", file: "songs/Nammaku_Adallaloni_Premalani.mp3" },
   { title: "Nannu Lalinchu", file: "songs/Nannu_Lalinchu.mp3" },
   { title: "Pacha Pachani palle Bathukamma", file: "songs/Pacha_Pachani_palle_Bathukamma.mp3" },
-  { title: "Sirulolikinche", file: "songs/Sirulolikinche.mp3" }
+  { title: "Sirulolikinche", file: "songs/Sirulolikinche.mp3" },
+  { title: "Regumulloe", file: "songs/Regumulloe.mp3" }
   
 ]

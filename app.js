@@ -121,6 +121,11 @@ const DEFAULT_PLAYLISTS = [
     id: "playlist-13",
     name: "Inspirational Songs",
     songs: []
+  },
+  {
+    id: "playlist-14",
+    name: "Bathukamma Songs",
+    songs: []
   }
 ];
 

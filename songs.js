@@ -679,8 +679,13 @@ window.songs = [
   { title: "Yeh lshq Hai", file: "songs/Yeh_lshq_Hai.mp3" },
   { title: "Zinda", file: "songs/Zinda.mp3" },
   { title: "Zinda Bhaag Milkha Bhaag", file: "songs/Zinda_Bhaag_Milkha_Bhaag.mp3" },
-  { title: "ఆగిపోతే తప్పు", file: "songs/ఆగిపోతే_తప్పు.mp3" }
-
-
+  { title: "ఆగిపోతే తప్పు", file: "songs/ఆగిపోతే_తప్పు.mp3" },
+  { title: "Bangaru Bathukammanu Intina perichi", file: "songs/Bangaru_Bathukammanu_Intina_perichi.mp3" },
+  { title: "Chithu Chithu bomma", file: "songs/Chithu_Chithu_bomma.mp3" },
+  { title: "Em Em Puvapune", file: "songs/Em_Em_Puvapune.mp3" },
+  { title: "Nammaku Adallaloni Premalani", file: "songs/Nammaku_Adallaloni_Premalani.mp3" },
+  { title: "Nannu Lalinchu", file: "songs/Nannu_Lalinchu.mp3" },
+  { title: "Pacha Pachani palle Bathukamma", file: "songs/Pacha_Pachani_palle_Bathukamma.mp3" },
+  { title: "Sirulolikinche", file: "songs/Sirulolikinche.mp3" }
   
 ]
